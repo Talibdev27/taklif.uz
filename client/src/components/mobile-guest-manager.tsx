@@ -92,22 +92,22 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
       confirmed: { 
         variant: 'default' as const, 
         label: t('guestList.confirmed'),
-        className: 'bg-green-100 text-green-800 border-green-200'
+        className: 'bg-green-100 text-green-800 border-2 border-green-300'
       },
       declined: { 
         variant: 'destructive' as const, 
         label: t('guestList.declined'),
-        className: 'bg-red-100 text-red-800 border-red-200'
+        className: 'bg-red-100 text-red-800 border-2 border-red-300'
       },
       pending: { 
         variant: 'secondary' as const, 
         label: t('guestList.pending'),
-        className: 'bg-yellow-100 text-yellow-800 border-yellow-200'
+        className: 'bg-yellow-100 text-yellow-800 border-2 border-yellow-300'
       },
       maybe: { 
         variant: 'outline' as const, 
         label: t('guestList.maybe'),
-        className: 'bg-blue-100 text-blue-800 border-blue-200'
+        className: 'bg-blue-100 text-blue-800 border-2 border-blue-300'
       },
     };
 
@@ -115,9 +115,9 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
     return (
       <Badge 
         variant={config.variant}
-        className={`text-xs font-semibold px-3 py-1 rounded-full ${config.className}`}
+        className={`text-lg font-bold px-6 py-3 rounded-xl ${config.className}`}
       >
-        {config.label}
+        {config.label.toUpperCase()}
       </Badge>
     );
   };
@@ -153,73 +153,104 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
   const responseRate = stats.total > 0 ? Math.round(((stats.confirmed + stats.declined + stats.maybe) / stats.total) * 100) : 0;
 
   return (
-    <div className={`space-y-4 sm:space-y-6 ${className}`}>
+    <div className={`space-y-6 ${className}`}>
       {/* Mobile-First Header */}
-      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 text-center">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">{weddingTitle}</h1>
-                        <p className="text-sm text-gray-600">{t('manage.guestManagement')}</p>
+      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 text-center">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">{weddingTitle}</h1>
+        <p className="text-base text-gray-600">{t('manage.guestManagement')}</p>
       </div>
 
-      {/* Mobile-First Stats Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-200 active:scale-98">
-          <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-2">{stats.confirmed}</div>
-          <div className="text-xs sm:text-sm text-gray-600 uppercase tracking-wide font-medium">{t('guestList.confirmed')}</div>
+      {/* Mobile-Optimized Statistics Section - Vertical Stack */}
+      <div className="space-y-4">
+        {/* TASDIQLANGAN */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+              <span className="text-lg font-semibold text-gray-900">{t('guestList.confirmed').toUpperCase()}</span>
+            </div>
+            <span className="text-3xl font-bold text-green-600">{stats.confirmed}</span>
+          </div>
         </div>
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-200 active:scale-98">
-          <div className="text-2xl sm:text-3xl font-bold text-yellow-600 mb-2">{stats.pending}</div>
-          <div className="text-xs sm:text-sm text-gray-600 uppercase tracking-wide font-medium">{t('guestList.pending')}</div>
+
+        {/* KUTILMOQDA */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
+              <span className="text-lg font-semibold text-gray-900">{t('guestList.pending').toUpperCase()}</span>
+            </div>
+            <span className="text-3xl font-bold text-yellow-600">{stats.pending}</span>
+          </div>
         </div>
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-200 active:scale-98">
-          <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-2">{stats.maybe}</div>
-          <div className="text-xs sm:text-sm text-gray-600 uppercase tracking-wide font-medium">{t('guestList.maybe')}</div>
+
+        {/* EHTIMOL */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+              <span className="text-lg font-semibold text-gray-900">{t('guestList.maybe').toUpperCase()}</span>
+            </div>
+            <span className="text-3xl font-bold text-blue-600">{stats.maybe}</span>
+          </div>
         </div>
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-200 active:scale-98">
-          <div className="text-2xl sm:text-3xl font-bold text-red-600 mb-2">{stats.declined}</div>
-          <div className="text-xs sm:text-sm text-gray-600 uppercase tracking-wide font-medium">{t('guestList.declined')}</div>
+
+        {/* RAD ETILGAN */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+              <span className="text-lg font-semibold text-gray-900">{t('guestList.declined').toUpperCase()}</span>
+            </div>
+            <span className="text-3xl font-bold text-red-600">{stats.declined}</span>
+          </div>
         </div>
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-200 active:scale-98 col-span-2 sm:col-span-1">
-          <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-2">{stats.withComments}</div>
-          <div className="text-xs sm:text-sm text-gray-600 uppercase tracking-wide font-medium flex items-center justify-center gap-1">
-            <MessageSquare className="h-3 w-3" />
-            {t('guestList.comments') || 'Comments'}
+
+        {/* IZOHLAR */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <MessageSquare className="w-4 h-4 text-purple-500" />
+              <span className="text-lg font-semibold text-gray-900">{(t('guestList.comments') || 'IZOHLAR').toUpperCase()}</span>
+            </div>
+            <span className="text-3xl font-bold text-purple-600">{stats.withComments}</span>
           </div>
         </div>
       </div>
 
-      {/* Progress Section */}
-      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20">
+      {/* Response Rate Progress */}
+      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
         <div className="flex justify-between items-center mb-4">
-          <span className="font-semibold text-gray-900">{t('guestList.responseRate')}</span>
-          <span className="text-green-600 font-bold">{responseRate}%</span>
+          <span className="text-lg font-semibold text-gray-900">{t('guestList.responseRate')}</span>
+          <span className="text-2xl font-bold text-green-600">{responseRate}%</span>
         </div>
-        <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+        <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
           <div 
             className="bg-gradient-to-r from-green-500 to-green-600 h-full rounded-full transition-all duration-500"
             style={{ width: `${responseRate}%` }}
           ></div>
         </div>
-        <div className="mt-3 text-sm text-gray-600">
+        <div className="mt-4 text-base text-gray-600">
           {stats.confirmed + stats.declined + stats.maybe} out of {stats.total} guests responded
         </div>
       </div>
 
-      {/* Search and Filter Section */}
-      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20">
+      {/* Search Section */}
+      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
         <div className="space-y-4">
           <div className="relative">
-            <Search className="absolute left-4 top-4 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
             <Input
               type="text"
               placeholder={t('guestList.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-12 pl-12 pr-5 text-base border-2 border-gray-200 rounded-xl focus:border-blue-500 bg-gray-50 focus:bg-white transition-all"
+              className="w-full h-14 pl-14 pr-5 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500 bg-gray-50 focus:bg-white transition-all"
             />
           </div>
           
-          {/* Filter Tabs - Mobile Scrollable */}
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          {/* Filter Buttons - Mobile Optimized */}
+          <div className="flex flex-col gap-3">
             {[
               { key: 'all', label: 'All' },
               { key: 'confirmed', label: t('guestList.confirmed') },
@@ -230,7 +261,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
               <button
                 key={filter.key}
                 onClick={() => setStatusFilter(filter.key)}
-                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                className={`w-full h-12 px-6 rounded-xl text-lg font-medium transition-all ${
                   statusFilter === filter.key
                     ? 'bg-blue-600 text-white shadow-lg'
                     : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-blue-300'
@@ -243,14 +274,15 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
         </div>
       </div>
 
-      {/* Guest List */}
-      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-white/20">
-        <div className="space-y-3">
+      {/* Guest Comments Section - Mobile-Optimized Cards */}
+      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Guest List</h2>
+        <div className="space-y-4">
           {filteredGuests.length === 0 ? (
             <div className="text-center py-12">
-              <UserPlus className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('guestList.noGuests')}</h3>
-              <p className="text-gray-600 mb-4">
+              <UserPlus className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-xl font-medium text-gray-900 mb-2">{t('guestList.noGuests')}</h3>
+              <p className="text-lg text-gray-600 mb-4">
                 {searchTerm || statusFilter !== 'all' 
                   ? 'Try adjusting your search or filters' 
                   : 'No guests have been added yet'
@@ -259,80 +291,42 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
             </div>
           ) : (
             filteredGuests.map((guest: Guest) => (
-              <div key={guest.id} className="border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
-                {/* Main Guest Info Row */}
-                <div className="flex items-center justify-between p-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      {getStatusIcon(guest.rsvpStatus)}
-                      <h4 className="font-semibold text-gray-900 truncate">{guest.name}</h4>
-                      {guest.message && (
-                        <MessageSquare className="h-4 w-4 text-blue-600 flex-shrink-0" />
-                      )}
-                    </div>
-                    <div className="text-sm text-gray-600 space-y-1">
-                      {guest.phone && (
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-3 w-3" />
-                          <span>{guest.phone}</span>
-                        </div>
-                      )}
-                      {guest.email && (
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-3 w-3" />
-                          <span className="truncate">{guest.email}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 flex-shrink-0">
-                    {getStatusBadge(guest.rsvpStatus)}
-                    <div className="flex gap-1">
-                      {/* Quick Status Update Buttons */}
-                      <div className="flex flex-col gap-1">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleStatusUpdate(guest.id, 'confirmed')}
-                          disabled={guest.rsvpStatus === 'confirmed'}
-                          className="h-8 w-8 p-0 text-green-600 hover:bg-green-50"
-                          title="Mark as confirmed"
-                        >
-                          <CheckCircle className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleStatusUpdate(guest.id, 'declined')}
-                          disabled={guest.rsvpStatus === 'declined'}
-                          className="h-8 w-8 p-0 text-red-600 hover:bg-red-50"
-                          title="Mark as declined"
-                        >
-                          <XCircle className="h-3 w-3" />
-                        </Button>
+              <div key={guest.id} className="bg-white border-2 border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                {/* Guest Name - Large and Bold at Top */}
+                <div className="mb-4">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{guest.name}</h3>
+                  
+                  {/* Contact Info */}
+                  <div className="space-y-2">
+                    {guest.phone && (
+                      <div className="flex items-center gap-3">
+                        <Phone className="h-5 w-5 text-gray-400" />
+                        <span className="text-lg text-gray-600">{guest.phone}</span>
                       </div>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => deleteGuestMutation.mutate(guest.id)}
-                        className="h-9 w-9 p-0 text-red-600 hover:text-red-700"
-                        title="Delete guest"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    )}
+                    {guest.email && (
+                      <div className="flex items-center gap-3">
+                        <Mail className="h-5 w-5 text-gray-400" />
+                        <span className="text-lg text-gray-600 break-all">{guest.email}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
-                
-                {/* Guest Message - Separate Row */}
+
+                {/* Status Badge - Below Name */}
+                <div className="mb-4">
+                  {getStatusBadge(guest.rsvpStatus)}
+                </div>
+
+                {/* Message Section - At Bottom in Styled Container */}
                 {guest.message && (
-                  <div className="px-4 pb-4">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                      <div className="flex items-start gap-2">
-                        <MessageSquare className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="mb-4">
+                    <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+                      <div className="flex items-start gap-3">
+                        <MessageSquare className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-blue-900 mb-1">Message:</p>
-                          <p className="text-sm text-blue-800 leading-relaxed break-words">
+                          <p className="text-base font-semibold text-blue-900 mb-2">Message:</p>
+                          <p className="text-lg text-blue-800 leading-relaxed break-words">
                             {guest.message}
                           </p>
                         </div>
@@ -340,14 +334,49 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
                     </div>
                   </div>
                 )}
+
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      onClick={() => handleStatusUpdate(guest.id, 'confirmed')}
+                      disabled={guest.rsvpStatus === 'confirmed'}
+                      className="h-12 text-lg font-medium text-green-600 border-green-300 hover:bg-green-50 disabled:opacity-50"
+                    >
+                      <CheckCircle className="h-5 w-5 mr-2" />
+                      Confirm
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      onClick={() => handleStatusUpdate(guest.id, 'declined')}
+                      disabled={guest.rsvpStatus === 'declined'}
+                      className="h-12 text-lg font-medium text-red-600 border-red-300 hover:bg-red-50 disabled:opacity-50"
+                    >
+                      <XCircle className="h-5 w-5 mr-2" />
+                      Decline
+                    </Button>
+                  </div>
+                  <Button
+                    size="lg"
+                    variant="destructive"
+                    onClick={() => deleteGuestMutation.mutate(guest.id)}
+                    className="h-12 text-lg font-medium"
+                  >
+                    <Trash2 className="h-5 w-5 mr-2" />
+                    Delete Guest
+                  </Button>
+                </div>
               </div>
             ))
           )}
         </div>
       </div>
 
-      {/* Floating Action Button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* Floating Action Button - Larger for Mobile */}
+      <div className="fixed bottom-8 right-8 z-50">
         <AddGuestDialog weddingId={weddingId} />
       </div>
     </div>

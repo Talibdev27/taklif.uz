@@ -255,5 +255,14 @@
   "GUESTLIST.DECLINED": "Declined",
   "guestList.responseRate": "Response Rate",
   "guestList.searchPlaceholder": "Search guests...",
-  "guestList.searchGuests": "Search guests..."
+  "guestList.searchGuests": "Search guests...",
+  "dashboard.myWeddingWebsites": "My Wedding Websites",
+  "dashboard.manageWebsites": "Manage Websites",
+  "dashboard.createNewWebsite": "Create New Website",
+  "dashboard.public": "Public",
+  "dashboard.view": "View",
+  "dashboard.manage": "Manage",
+  "dashboard.weddingWebsite": "Wedding Website",
+  "dashboard.publicWebsites": "Public Websites",
+  "dashboard.upcomingEvents": "Upcoming Events"
 } 

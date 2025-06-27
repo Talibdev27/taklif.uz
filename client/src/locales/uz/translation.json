@@ -254,5 +254,14 @@
   "GUESTLIST.DECLINED": "Rad etilgan",
   "guestList.responseRate": "Javob berish foizi",
   "guestList.searchPlaceholder": "Mehmonlarni qidirish...",
-  "guestList.searchGuests": "Mehmonlarni qidirish..."
+  "guestList.searchGuests": "Mehmonlarni qidirish...",
+  "dashboard.myWeddingWebsites": "Mening To'y Veb-saytlarim",
+  "dashboard.manageWebsites": "Veb-saytlarni Boshqarish",
+  "dashboard.createNewWebsite": "Yangi Veb-sayt Yaratish",
+  "dashboard.public": "Ommaviy",
+  "dashboard.view": "Ko'rish",
+  "dashboard.manage": "Boshqarish",
+  "dashboard.weddingWebsite": "To'y Veb-sayti",
+  "dashboard.publicWebsites": "Ommaviy Veb-saytlar",
+  "dashboard.upcomingEvents": "Yaqinlashayotgan Tadbirlar"
 } 

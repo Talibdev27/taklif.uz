@@ -252,5 +252,14 @@
   "GUESTLIST.DECLINED": "Отклонено",
   "guestList.responseRate": "Процент ответов",
   "guestList.searchPlaceholder": "Поиск гостей...",
-  "guestList.searchGuests": "Поиск гостей..."
+  "guestList.searchGuests": "Поиск гостей...",
+  "dashboard.myWeddingWebsites": "Мои Свадебные Сайты",
+  "dashboard.manageWebsites": "Управление Сайтами",
+  "dashboard.createNewWebsite": "Создать Новый Сайт",
+  "dashboard.public": "Публичный",
+  "dashboard.view": "Просмотр",
+  "dashboard.manage": "Управление",
+  "dashboard.weddingWebsite": "Свадебный Сайт",
+  "dashboard.publicWebsites": "Публичные Сайты",
+  "dashboard.upcomingEvents": "Предстоящие События"
 } 
