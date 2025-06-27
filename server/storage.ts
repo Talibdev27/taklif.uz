@@ -255,6 +255,7 @@ export class MemStorage implements IStorage {
       notes: insertGuest.notes || null,
       invitationSentAt: insertGuest.invitationSentAt || null,
       rsvpStatus: (insertGuest.rsvpStatus as "pending" | "confirmed" | "declined" | "maybe") || 'pending',
+      responseText: insertGuest.responseText || null,
       side: (insertGuest.side as "bride" | "groom" | "both") || 'both',
       plusOne: insertGuest.plusOne || false,
       additionalGuests: insertGuest.additionalGuests || 0,

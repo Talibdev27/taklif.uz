@@ -87,7 +87,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
     withComments: guests.filter((g: Guest) => g.message && g.message.trim()).length,
   };
 
-  const getStatusBadge = (status: Guest['rsvpStatus']) => {
+  const getStatusBadge = (status: Guest['rsvpStatus'], responseText?: string | null) => {
     const statusConfig = {
       confirmed: { 
         variant: 'default' as const, 
@@ -112,12 +112,16 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
     };
 
     const config = statusConfig[status] || statusConfig.pending; // Fallback to pending if status is invalid
+    
+    // Use the exact response text if available, otherwise fallback to translation
+    const displayText = responseText || config.label;
+    
     return (
       <Badge 
         variant={config.variant}
         className={`text-lg font-bold px-6 py-3 rounded-xl ${config.className}`}
       >
-        {config.label.toUpperCase()}
+        {displayText.toUpperCase()}
       </Badge>
     );
   };
@@ -315,7 +319,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
 
                 {/* Status Badge - Below Name */}
                 <div className="mb-4">
-                  {getStatusBadge(guest.rsvpStatus)}
+                  {getStatusBadge(guest.rsvpStatus, guest.responseText)}
                 </div>
 
                 {/* Message Section - At Bottom in Styled Container */}

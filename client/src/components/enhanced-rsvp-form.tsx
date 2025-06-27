@@ -25,6 +25,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
   const [rsvpStatus, setRsvpStatus] = useState<'confirmed' | 'declined' | 'maybe'>('confirmed');
+  const [responseText, setResponseText] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -42,7 +43,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
   );
 
   const updateRSVP = useMutation({
-    mutationFn: async (data: { guestId: number; rsvpStatus: string; message?: string }) => {
+    mutationFn: async (data: { guestId: number; rsvpStatus: string; responseText: string; message?: string }) => {
       const response = await fetch(`/api/guests/${data.guestId}/rsvp`, {
         method: 'PUT',
         headers: {
@@ -50,6 +51,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
         },
         body: JSON.stringify({
           rsvpStatus: data.rsvpStatus,
+          responseText: data.responseText,
           message: data.message,
           respondedAt: new Date(),
         }),
@@ -92,6 +94,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
     updateRSVP.mutate({
       guestId: selectedGuest.id,
       rsvpStatus,
+      responseText,
       message,
     });
   };
@@ -188,28 +191,38 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
           {selectedGuest && (
             <>
               <div className="space-y-4">
-                <Label className="text-lg font-semibold text-gray-700">Will you be attending?</Label>
+                <Label className="text-lg font-semibold text-gray-700">{t('rsvp.willYouAttend')}</Label>
                 <RadioGroup
                   value={rsvpStatus}
-                  onValueChange={(value: 'confirmed' | 'declined' | 'maybe') => setRsvpStatus(value)}
+                  onValueChange={(value: 'confirmed' | 'declined' | 'maybe') => {
+                    setRsvpStatus(value);
+                    // Set the response text based on the selected option
+                    if (value === 'confirmed') {
+                      setResponseText(t('rsvp.confirmedEmoji'));
+                    } else if (value === 'declined') {
+                      setResponseText(t('rsvp.declinedEmoji'));
+                    } else if (value === 'maybe') {
+                      setResponseText(t('rsvp.maybeEmoji'));
+                    }
+                  }}
                   className="flex flex-col space-y-3"
                 >
                   <div className="flex items-center space-x-3">
                     <RadioGroupItem value="confirmed" id="confirmed" />
                     <Label htmlFor="confirmed" className="text-base font-medium text-gray-700">
-                      Yes, I'll be there! 🎉
+                      {t('rsvp.confirmedEmoji')}
                     </Label>
                   </div>
                   <div className="flex items-center space-x-3">
                     <RadioGroupItem value="declined" id="declined" />
                     <Label htmlFor="declined" className="text-base font-medium text-gray-700">
-                      Sorry, can't make it 😢
+                      {t('rsvp.declinedEmoji')}
                     </Label>
                   </div>
                   <div className="flex items-center space-x-3">
                     <RadioGroupItem value="maybe" id="maybe" />
                     <Label htmlFor="maybe" className="text-base font-medium text-gray-700">
-                      I'm not sure yet 🤔
+                      {t('rsvp.maybeEmoji')}
                     </Label>
                   </div>
                 </RadioGroup>

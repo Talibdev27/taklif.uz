@@ -51,6 +51,7 @@ export const guests = sqliteTable("guests", {
   email: text("email"),
   phone: text("phone"),
   rsvpStatus: text("rsvp_status").$type<"pending" | "confirmed" | "declined" | "maybe">().notNull().default("pending"),
+  responseText: text("response_text"), // Store the exact response text chosen by guest
   plusOne: integer("plus_one", { mode: 'boolean' }).notNull().default(false),
   plusOneName: text("plus_one_name"),
   additionalGuests: integer("additional_guests").notNull().default(0),
@@ -232,6 +233,7 @@ export const insertWeddingAccessSchema = createInsertSchema(weddingAccess).omit(
 
 export const rsvpUpdateSchema = z.object({
   rsvpStatus: z.enum(["confirmed", "declined", "maybe"]),
+  responseText: z.string().optional(),
   message: z.string().optional(),
 });
 
