@@ -121,7 +121,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
     addGuestMutation.mutate(data);
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: string, responseText?: string | null, plusOne?: boolean) => {
     const variants = {
       confirmed: 'default',
       pending: 'secondary',
@@ -129,9 +129,29 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
       maybe: 'outline'
     } as const;
     
+    // Determine display text based on current UI language
+    let displayText = t(`guests.status.${status}`); // Default fallback
+    
+    if (status === 'confirmed' && plusOne) {
+      // "With guest" option
+      displayText = t('rsvp.confirmedWithGuestEmoji');
+    } else if (status === 'confirmed') {
+      // Regular confirmation
+      displayText = t('rsvp.confirmedEmoji');
+    } else if (status === 'declined') {
+      displayText = t('rsvp.declinedEmoji');
+    } else if (status === 'maybe') {
+      displayText = t('rsvp.maybeEmoji');
+    }
+    
+    // Fallback to responseText only if translation is not available
+    if (!displayText || displayText.includes('rsvp.')) {
+      displayText = responseText || t(`guests.status.${status}`);
+    }
+    
     return (
       <Badge variant={variants[status as keyof typeof variants] || 'secondary'}>
-        {t(`guests.status.${status}`)}
+        {displayText}
       </Badge>
     );
   };
@@ -364,9 +384,9 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                       <SelectValue placeholder="Filter comments" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All</SelectItem>
-                      <SelectItem value="with-comments">With Comments</SelectItem>
-                      <SelectItem value="no-comments">No Comments</SelectItem>
+                      <SelectItem value="all">{t('guestList.all')}</SelectItem>
+                      <SelectItem value="with-comments">{t('guestList.withComments')}</SelectItem>
+                      <SelectItem value="no-comments">{t('guestList.noComments')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -425,7 +445,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </div>
-                          {getStatusBadge(guest.rsvpStatus)}
+                          {getStatusBadge(guest.rsvpStatus, guest.responseText, guest.plusOne)}
                         </div>
                       </div>
                       
@@ -487,7 +507,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="text-sm font-medium text-gray-700">RSVP Status</label>
-                        <div className="mt-1">{getStatusBadge(selectedGuest.rsvpStatus)}</div>
+                        <div className="mt-1">{getStatusBadge(selectedGuest.rsvpStatus, selectedGuest.responseText, selectedGuest.plusOne)}</div>
                       </div>
                       
                       {selectedGuest.email && (
@@ -683,7 +703,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2 mb-1">
                                   <span className="font-medium text-sm">{guest.name}</span>
-                                  {getStatusBadge(guest.rsvpStatus)}
+                                  {getStatusBadge(guest.rsvpStatus, guest.responseText, guest.plusOne)}
                                 </div>
                                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                                   {guest.message}

@@ -235,6 +235,7 @@ export const rsvpUpdateSchema = z.object({
   rsvpStatus: z.enum(["confirmed", "declined", "maybe"]),
   responseText: z.string().optional(),
   message: z.string().optional(),
+  plusOne: z.boolean().optional(),
 });
 
 // Types

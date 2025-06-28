@@ -87,7 +87,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
     withComments: guests.filter((g: Guest) => g.message && g.message.trim()).length,
   };
 
-  const getStatusBadge = (status: Guest['rsvpStatus'], responseText?: string | null) => {
+  const getStatusBadge = (status: Guest['rsvpStatus'], responseText?: string | null, plusOne?: boolean) => {
     const statusConfig = {
       confirmed: { 
         variant: 'default' as const, 
@@ -113,8 +113,25 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
 
     const config = statusConfig[status] || statusConfig.pending; // Fallback to pending if status is invalid
     
-    // Use the exact response text if available, otherwise fallback to translation
-    const displayText = responseText || config.label;
+    // Determine display text based on current UI language
+    let displayText = config.label; // Default fallback
+    
+    if (status === 'confirmed' && plusOne) {
+      // "With guest" option
+      displayText = t('rsvp.confirmedWithGuestEmoji');
+    } else if (status === 'confirmed') {
+      // Regular confirmation
+      displayText = t('rsvp.confirmedEmoji');
+    } else if (status === 'declined') {
+      displayText = t('rsvp.declinedEmoji');
+    } else if (status === 'maybe') {
+      displayText = t('rsvp.maybeEmoji');
+    }
+    
+    // Fallback to responseText only if translation is not available
+    if (!displayText || displayText.includes('rsvp.')) {
+      displayText = responseText || config.label;
+    }
     
     return (
       <Badge 
@@ -235,7 +252,10 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
           ></div>
         </div>
         <div className="mt-4 text-base text-gray-600">
-          {stats.confirmed + stats.declined + stats.maybe} out of {stats.total} guests responded
+          {t('guestList.responseStats', { 
+            responded: stats.confirmed + stats.declined + stats.maybe, 
+            total: stats.total 
+          })}
         </div>
       </div>
 
@@ -256,7 +276,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
           {/* Filter Buttons - Mobile Optimized */}
           <div className="flex flex-col gap-3">
             {[
-              { key: 'all', label: 'All' },
+              { key: 'all', label: t('guestList.all') },
               { key: 'confirmed', label: t('guestList.confirmed') },
               { key: 'pending', label: t('guestList.pending') },
               { key: 'maybe', label: t('guestList.maybe') },
@@ -280,7 +300,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
 
       {/* Guest Comments Section - Mobile-Optimized Cards */}
       <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Guest List</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-6">{t('guestList.title')}</h2>
         <div className="space-y-4">
           {filteredGuests.length === 0 ? (
             <div className="text-center py-12">
@@ -288,8 +308,8 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
               <h3 className="text-xl font-medium text-gray-900 mb-2">{t('guestList.noGuests')}</h3>
               <p className="text-lg text-gray-600 mb-4">
                 {searchTerm || statusFilter !== 'all' 
-                  ? 'Try adjusting your search or filters' 
-                  : 'No guests have been added yet'
+                  ? t('guestList.adjustFilters') 
+                  : t('guestList.noGuestsYet')
                 }
               </p>
             </div>
@@ -319,7 +339,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
 
                 {/* Status Badge - Below Name */}
                 <div className="mb-4">
-                  {getStatusBadge(guest.rsvpStatus, guest.responseText)}
+                  {getStatusBadge(guest.rsvpStatus, guest.responseText, guest.plusOne)}
                 </div>
 
                 {/* Message Section - At Bottom in Styled Container */}
@@ -329,7 +349,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
                       <div className="flex items-start gap-3">
                         <MessageSquare className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
                         <div className="min-w-0 flex-1">
-                          <p className="text-base font-semibold text-blue-900 mb-2">Message:</p>
+                          <p className="text-base font-semibold text-blue-900 mb-2">{t('guestList.message')}:</p>
                           <p className="text-lg text-blue-800 leading-relaxed break-words">
                             {guest.message}
                           </p>
@@ -350,7 +370,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
                       className="h-12 text-lg font-medium text-green-600 border-green-300 hover:bg-green-50 disabled:opacity-50"
                     >
                       <CheckCircle className="h-5 w-5 mr-2" />
-                      Confirm
+                      {t('guestList.confirm')}
                     </Button>
                     <Button
                       size="lg"
@@ -360,7 +380,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
                       className="h-12 text-lg font-medium text-red-600 border-red-300 hover:bg-red-50 disabled:opacity-50"
                     >
                       <XCircle className="h-5 w-5 mr-2" />
-                      Decline
+                      {t('guestList.decline')}
                     </Button>
                   </div>
                   <Button
@@ -370,7 +390,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
                     className="h-12 text-lg font-medium"
                   >
                     <Trash2 className="h-5 w-5 mr-2" />
-                    Delete Guest
+                    {t('guestList.deleteGuest')}
                   </Button>
                 </div>
               </div>

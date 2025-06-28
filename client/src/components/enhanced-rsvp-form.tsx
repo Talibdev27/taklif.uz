@@ -24,7 +24,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
-  const [rsvpStatus, setRsvpStatus] = useState<'confirmed' | 'declined' | 'maybe'>('confirmed');
+  const [rsvpStatus, setRsvpStatus] = useState<'confirmed' | 'confirmed_with_guest' | 'declined' | 'maybe'>('confirmed');
   const [responseText, setResponseText] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -43,7 +43,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
   );
 
   const updateRSVP = useMutation({
-    mutationFn: async (data: { guestId: number; rsvpStatus: string; responseText: string; message?: string }) => {
+    mutationFn: async (data: { guestId: number; rsvpStatus: string; responseText: string; message?: string; plusOne?: boolean }) => {
       const response = await fetch(`/api/guests/${data.guestId}/rsvp`, {
         method: 'PUT',
         headers: {
@@ -53,6 +53,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
           rsvpStatus: data.rsvpStatus,
           responseText: data.responseText,
           message: data.message,
+          plusOne: data.plusOne,
           respondedAt: new Date(),
         }),
       });
@@ -91,11 +92,16 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
       return;
     }
 
+    // Convert confirmed_with_guest to confirmed for database storage
+    const finalRsvpStatus = rsvpStatus === 'confirmed_with_guest' ? 'confirmed' : rsvpStatus;
+    const plusOne = rsvpStatus === 'confirmed_with_guest';
+    
     updateRSVP.mutate({
       guestId: selectedGuest.id,
-      rsvpStatus,
+      rsvpStatus: finalRsvpStatus,
       responseText,
       message,
+      plusOne,
     });
   };
 
@@ -194,11 +200,13 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
                 <Label className="text-lg font-semibold text-gray-700">{t('rsvp.willYouAttend')}</Label>
                 <RadioGroup
                   value={rsvpStatus}
-                  onValueChange={(value: 'confirmed' | 'declined' | 'maybe') => {
+                  onValueChange={(value: 'confirmed' | 'confirmed_with_guest' | 'declined' | 'maybe') => {
                     setRsvpStatus(value);
                     // Set the response text based on the selected option
                     if (value === 'confirmed') {
                       setResponseText(t('rsvp.confirmedEmoji'));
+                    } else if (value === 'confirmed_with_guest') {
+                      setResponseText(t('rsvp.confirmedWithGuestEmoji'));
                     } else if (value === 'declined') {
                       setResponseText(t('rsvp.declinedEmoji'));
                     } else if (value === 'maybe') {
@@ -211,6 +219,12 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
                     <RadioGroupItem value="confirmed" id="confirmed" />
                     <Label htmlFor="confirmed" className="text-base font-medium text-gray-700">
                       {t('rsvp.confirmedEmoji')}
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <RadioGroupItem value="confirmed_with_guest" id="confirmed_with_guest" />
+                    <Label htmlFor="confirmed_with_guest" className="text-base font-medium text-gray-700">
+                      {t('rsvp.confirmedWithGuestEmoji')}
                     </Label>
                   </div>
                   <div className="flex items-center space-x-3">

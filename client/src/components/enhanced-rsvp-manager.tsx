@@ -400,7 +400,27 @@ export function EnhancedRSVPManager({ wedding, guests, className = '' }: Enhance
                   <Badge className={`border ${getStatusColor(guest.rsvpStatus)}`}>
                     <div className="flex items-center gap-1">
                       {getStatusIcon(guest.rsvpStatus)}
-                      <span>{t(`guests.status.${guest.rsvpStatus}`)}</span>
+                      <span>{(() => {
+                        // Determine display text based on current UI language
+                        let displayText = t(`guests.status.${guest.rsvpStatus}`); // Default fallback
+                        
+                        if (guest.rsvpStatus === 'confirmed' && guest.plusOne) {
+                          displayText = t('rsvp.confirmedWithGuestEmoji');
+                        } else if (guest.rsvpStatus === 'confirmed') {
+                          displayText = t('rsvp.confirmedEmoji');
+                        } else if (guest.rsvpStatus === 'declined') {
+                          displayText = t('rsvp.declinedEmoji');
+                        } else if (guest.rsvpStatus === 'maybe') {
+                          displayText = t('rsvp.maybeEmoji');
+                        }
+                        
+                        // Fallback to responseText only if translation is not available
+                        if (!displayText || displayText.includes('rsvp.')) {
+                          displayText = guest.responseText || t(`guests.status.${guest.rsvpStatus}`);
+                        }
+                        
+                        return displayText;
+                      })()}</span>
                     </div>
                   </Badge>
                 </div>
