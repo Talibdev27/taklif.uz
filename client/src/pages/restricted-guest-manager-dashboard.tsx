@@ -23,13 +23,16 @@ export default function RestrictedGuestManagerDashboard() {
       return;
     }
 
+    // SECURITY FIX: Only allow guest_manager role access
     if (currentUser.role !== 'guest_manager') {
-      // Redirect regular users to user dashboard, admins to admin dashboard
       setHasRedirected(true);
-      if (currentUser.isAdmin) {
-        setLocation('/admin/dashboard');
-      } else {
+      // Guest managers should never be redirected to admin areas
+      // Always redirect non-guest-managers to regular user areas
+      if (currentUser.role === 'user') {
         setLocation('/dashboard');
+      } else {
+        // For any other role, send to landing page
+        setLocation('/');
       }
       return;
     }

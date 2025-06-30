@@ -424,6 +424,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin token verification endpoint
+  app.get("/api/admin/verify", authenticateAdmin, async (req: any, res) => {
+    try {
+      // If authenticateAdmin middleware passes, user is verified admin
+      res.json({ 
+        success: true, 
+        message: "Admin access verified",
+        user: req.user 
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Server error during verification" });
+    }
+  });
+
   // Admin management routes - Full CRUD operations
   app.get("/api/admin/users", authenticateToken, requireAdmin, async (req, res) => {
     try {

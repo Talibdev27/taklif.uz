@@ -52,6 +52,17 @@ export default function WeddingManage() {
     enabled: !!weddingUrl,
   });
 
+  // Clear any stale localStorage admin flags for guest managers
+  useEffect(() => {
+    if (currentUser?.role === 'guest_manager') {
+      // Clear any admin flags in localStorage for guest managers
+      localStorage.removeItem('isAdmin');
+      localStorage.removeItem('adminUser');
+      localStorage.removeItem('adminToken');
+      console.log('🧹 Cleaned localStorage admin flags for guest manager');
+    }
+  }, [currentUser?.role]);
+
   // Force language based on wedding language settings
   useEffect(() => {
     if (wedding?.defaultLanguage) {
@@ -76,7 +87,8 @@ export default function WeddingManage() {
 
   // Check access permissions - must be done before any conditional returns
   const isOwner = currentUser && wedding && wedding.userId === currentUser.id;
-  const isAdmin = localStorage.getItem('isAdmin') === 'true' || (currentUser && (currentUser.isAdmin === true || currentUser.role === 'admin'));
+  // SECURITY FIX: Only use server-verified admin status, never localStorage
+  const isAdmin = currentUser && (currentUser.isAdmin === true || currentUser.role === 'admin');
   
   // Check if user has specific wedding access through wedding_access table
   const { data: userWeddingAccess } = useQuery({
@@ -91,11 +103,22 @@ export default function WeddingManage() {
   const hasGuestManagerAccess = currentUser?.role === 'guest_manager' && userWeddingAccess;
   const hasAccess = isAdmin || (currentUser?.role !== 'guest_manager' && isOwner) || hasGuestManagerAccess;
 
+  // DEBUG: Log user role for troubleshooting
+  console.log('🔍 Debug wedding-manage.tsx:', {
+    currentUserRole: currentUser?.role,
+    isAdmin,
+    isOwner,
+    hasGuestManagerAccess,
+    hasAccess,
+    userWeddingAccess
+  });
+
   // Update wedding mutation
   const updateWeddingMutation = useMutation({
     mutationFn: async (updatedData: Partial<Wedding>) => {
       const headers: HeadersInit = { 'Content-Type': 'application/json' };
-      if (localStorage.getItem('isAdmin') === 'true') {
+      // SECURITY FIX: Only use server-verified admin status
+      if (currentUser && (currentUser.isAdmin === true || currentUser.role === 'admin')) {
         headers['x-admin'] = 'true';
       }
       
@@ -131,22 +154,17 @@ export default function WeddingManage() {
   const getBackToDashboardPath = () => {
     if (!currentUser) return '/login';
     
-    // Guest managers should go to the main landing page
+    // SECURITY FIX: Use server-verified role, not localStorage
     if (currentUser.role === 'guest_manager') {
-      return '/';
+      return '/guest-manager';
     }
     
-    // Check if user is admin by looking at localStorage (where admin status is stored)
-    const isAdminLocal = localStorage.getItem('isAdmin') === 'true';
-    const fromAdmin = sessionStorage.getItem('fromAdminDashboard');
-    
-    // SECURITY: Only return to admin dashboard if user is admin AND came from admin dashboard
-    if (isAdminLocal && fromAdmin === 'true') {
-      return '/system/dashboard';
+    if (currentUser.role === 'user') {
+      return '/dashboard';
     }
     
-    // Default: Always return regular users to user dashboard
-    return '/dashboard';
+    // For any other roles, redirect to landing page
+    return '/';
   };
 
   const handleBackToDashboard = () => {
@@ -155,10 +173,7 @@ export default function WeddingManage() {
       return;
     }
     
-    // Get the path BEFORE clearing the session flag
     const targetPath = getBackToDashboardPath();
-    // Clear the admin dashboard flag after getting the path
-    sessionStorage.removeItem('fromAdminDashboard');
     setLocation(targetPath);
   };
 
@@ -235,12 +250,13 @@ export default function WeddingManage() {
             <h2 className="text-xl font-semibold text-[#2C3338] mb-2">{t('manage.accessDenied')}</h2>
             <p className="text-[#2C3338]/70 mb-4">{t('manage.noPermission')}</p>
             <Button onClick={() => {
+              // SECURITY FIX: Use server-verified role, not localStorage
               if (currentUser.role === 'guest_manager') {
-                setLocation('/');
-              } else if (localStorage.getItem('isAdmin') === 'true') {
-                setLocation('/system/dashboard');
-              } else {
+                setLocation('/guest-manager');
+              } else if (currentUser.role === 'user') {
                 setLocation('/dashboard');
+              } else {
+                setLocation('/');
               }
             }} className="wedding-button">
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -306,19 +322,25 @@ export default function WeddingManage() {
       <div className="max-w-7xl mx-auto px-6 py-8">
         <Tabs defaultValue="guests" className="space-y-6">
           {/* For guest managers, show only Guest Management tab */}
-          {currentUser?.role === 'guest_manager' ? (
-            <TabsList className="grid w-full grid-cols-1">
-              <TabsTrigger value="guests">{t('manage.guestManagement')}</TabsTrigger>
-            </TabsList>
-          ) : (
-            <TabsList className="grid w-full grid-cols-5 lg:grid-cols-5">
-              <TabsTrigger value="details">{t('manage.weddingDetails')}</TabsTrigger>
-              <TabsTrigger value="guests">{t('manage.guestManagement')}</TabsTrigger>
-              <TabsTrigger value="dashboard">{t('manage.guestDashboard')}</TabsTrigger>
-              <TabsTrigger value="guestbook">{t('manage.guestBook')}</TabsTrigger>
-              <TabsTrigger value="photos">{t('manage.photoManagement')}</TabsTrigger>
-            </TabsList>
-          )}
+          {(() => {
+            console.log('🔍 Tab render logic:', { 
+              currentUserRole: currentUser?.role,
+              isGuestManager: currentUser?.role === 'guest_manager' 
+            });
+            return currentUser?.role === 'guest_manager' ? (
+              <TabsList className="grid w-full grid-cols-1">
+                <TabsTrigger value="guests">{t('manage.guestManagement')}</TabsTrigger>
+              </TabsList>
+            ) : (
+              <TabsList className="grid w-full grid-cols-5 lg:grid-cols-5">
+                <TabsTrigger value="details">{t('manage.weddingDetails')}</TabsTrigger>
+                <TabsTrigger value="guests">{t('manage.guestManagement')}</TabsTrigger>
+                <TabsTrigger value="dashboard">{t('manage.guestDashboard')}</TabsTrigger>
+                <TabsTrigger value="guestbook">{t('manage.guestBook')}</TabsTrigger>
+                <TabsTrigger value="photos">{t('manage.photoManagement')}</TabsTrigger>
+              </TabsList>
+            );
+          })()}
 
           {/* Wedding Details Tab - Only for non-guest managers */}
           {currentUser?.role !== 'guest_manager' && (

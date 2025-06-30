@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/lib/i18n';
 import { AuthProvider } from '@/hooks/useAuth';
-import { ProtectedRoute } from '@/components/protected-route';
+import { ProtectedRoute, AdminProtectedRoute } from '@/components/protected-route';
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import CreateWedding from "@/pages/create-wedding";
@@ -87,16 +87,32 @@ function Router() {
       {/* Wedding management for owners - guest_managers can view/manage guests only */}
       <Route path="/manage/:uniqueUrl" component={WeddingManage} />
 
-      {/* Admin login and dashboard */}
+      {/* SECURITY: Admin routes now properly protected */}
       <Route path="/admin" component={AdminLogin} />
       <Route path="/admin/login" component={AdminLogin} />
-      <Route path="/admin/dashboard" component={AdminDashboard} />
-      <Route path="/admin/wedding/:weddingUrl" component={AdminWeddingEdit} />
-      <Route path="/admin/weddings/:weddingUrl/edit" component={AdminWeddingEdit} />
+      <Route path="/admin/dashboard">
+        <AdminProtectedRoute>
+          <AdminDashboard />
+        </AdminProtectedRoute>
+      </Route>
+      <Route path="/admin/wedding/:weddingUrl">
+        <AdminProtectedRoute>
+          <AdminWeddingEdit />
+        </AdminProtectedRoute>
+      </Route>
+      <Route path="/admin/weddings/:weddingUrl/edit">
+        <AdminProtectedRoute>
+          <AdminWeddingEdit />
+        </AdminProtectedRoute>
+      </Route>
 
-      {/* Legacy admin routes */}
+      {/* Legacy admin routes - also protected */}
       <Route path="/system/auth" component={AdminLogin} />
-      <Route path="/system/dashboard" component={AdminDashboard} />
+      <Route path="/system/dashboard">
+        <AdminProtectedRoute>
+          <AdminDashboard />
+        </AdminProtectedRoute>
+      </Route>
 
       {/* Restricted Guest Manager Dashboard */}
       <Route path="/guest-manager" component={RestrictedGuestManagerDashboard} />
