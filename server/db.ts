@@ -1,27 +1,48 @@
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
-import { drizzle as drizzleNode } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
 import * as schema from "@shared/schema";
 
 // Environment-based database configuration
 const DATABASE_URL = process.env.DATABASE_URL;
 
-let db: any;
+let db: any = null;
 
-if (DATABASE_URL && DATABASE_URL.startsWith('postgres')) {
-  // Use PostgreSQL for production
-  console.log('🔗 Using PostgreSQL database');
-  const pool = new Pool({
-    connectionString: DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-  });
-  db = drizzleNode(pool, { schema });
-} else {
-  // Use SQLite for local development
-  console.log('💾 Using SQLite database (local development)');
+// Try to use PostgreSQL if available, fallback to SQLite
+try {
+  if (DATABASE_URL && DATABASE_URL.startsWith('postgres')) {
+    console.log('🔗 Attempting PostgreSQL connection...');
+    // Dynamic import for PostgreSQL (will be ignored if package not available)
+    import('drizzle-orm/node-postgres').then(async ({ drizzle: drizzleNode }) => {
+      const { Pool } = await import('pg');
+      const pool = new Pool({
+        connectionString: DATABASE_URL,
+        ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+      });
+      db = drizzleNode(pool, { schema });
+      console.log('✅ PostgreSQL connected successfully');
+    }).catch(error => {
+      console.log('⚠️ PostgreSQL not available, using SQLite fallback');
+      const sqlite = new Database('wedding.db');
+      db = drizzle(sqlite, { schema });
+    });
+  } else {
+    console.log('💾 Using SQLite database (local development)');
+    const sqlite = new Database('wedding.db');
+    db = drizzle(sqlite, { schema });
+  }
+} catch (error) {
+  console.log('💾 Fallback to SQLite due to error:', error instanceof Error ? error.message : String(error));
   const sqlite = new Database('wedding.db');
   db = drizzle(sqlite, { schema });
 }
+
+// If db is still null after a moment, initialize with SQLite
+setTimeout(() => {
+  if (!db) {
+    console.log('💾 Final SQLite fallback after timeout');
+    const sqlite = new Database('wedding.db');
+    db = drizzle(sqlite, { schema });
+  }
+}, 1000);
 
 export { db };
