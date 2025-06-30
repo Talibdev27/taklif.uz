@@ -50,7 +50,7 @@ export const guests = sqliteTable("guests", {
   name: text("name").notNull(),
   email: text("email"),
   phone: text("phone"),
-  rsvpStatus: text("rsvp_status").$type<"pending" | "confirmed" | "declined" | "maybe">().notNull().default("pending"),
+  rsvpStatus: text("rsvp_status").$type<"pending" | "confirmed" | "confirmed_with_guest" | "declined" | "maybe">().notNull().default("pending"),
   responseText: text("response_text"), // Store the exact response text chosen by guest
   plusOne: integer("plus_one", { mode: 'boolean' }).notNull().default(false),
   plusOneName: text("plus_one_name"),
@@ -232,7 +232,7 @@ export const insertWeddingAccessSchema = createInsertSchema(weddingAccess).omit(
 });
 
 export const rsvpUpdateSchema = z.object({
-  rsvpStatus: z.enum(["confirmed", "declined", "maybe"]),
+  rsvpStatus: z.enum(["confirmed", "confirmed_with_guest", "declined", "maybe"]),
   responseText: z.string().optional(),
   message: z.string().optional(),
   plusOne: z.boolean().optional(),

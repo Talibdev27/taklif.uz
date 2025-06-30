@@ -147,8 +147,15 @@ export function EpicRSVPForm({ weddingId, primaryColor = '#1976d2', accentColor 
               <FormControl>
                 <RadioGroup
                   onValueChange={(value) => {
-                    field.onChange(value === 'confirmed_with_guest' ? 'confirmed' : value);
-                    form.setValue('plusOne', value === 'confirmed_with_guest');
+                    field.onChange(value);
+                    // Set additionalGuests to 1 when confirmed_with_guest is selected
+                    if (value === 'confirmed_with_guest') {
+                      form.setValue('additionalGuests', 1);
+                      form.setValue('plusOne', true);
+                    } else {
+                      form.setValue('additionalGuests', 0);
+                      form.setValue('plusOne', false);
+                    }
                   }}
                   defaultValue={field.value}
                   className="flex flex-col space-y-3"

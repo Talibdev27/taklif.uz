@@ -81,6 +81,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
   const stats = {
     total: guests.length,
     confirmed: guests.filter((g: Guest) => g.rsvpStatus === 'confirmed').length,
+    confirmedWithGuest: guests.filter((g: Guest) => g.rsvpStatus === 'confirmed_with_guest').length,
     declined: guests.filter((g: Guest) => g.rsvpStatus === 'declined').length,
     pending: guests.filter((g: Guest) => g.rsvpStatus === 'pending').length,
     maybe: guests.filter((g: Guest) => g.rsvpStatus === 'maybe').length,
@@ -93,6 +94,11 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
         variant: 'default' as const, 
         label: t('guestList.confirmed'),
         className: 'bg-green-100 text-green-800 border-2 border-green-300'
+      },
+      confirmed_with_guest: { 
+        variant: 'default' as const, 
+        label: t('rsvp.confirmedWithGuestEmoji'),
+        className: 'bg-blue-100 text-blue-800 border-2 border-blue-300'
       },
       declined: { 
         variant: 'destructive' as const, 
@@ -116,7 +122,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
     // Determine display text based on current UI language
     let displayText = config.label; // Default fallback
     
-    if (status === 'confirmed' && plusOne) {
+    if (status === 'confirmed_with_guest') {
       // "With guest" option
       displayText = t('rsvp.confirmedWithGuestEmoji');
     } else if (status === 'confirmed') {
@@ -146,6 +152,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
   const getStatusIcon = (status: Guest['rsvpStatus']) => {
     const icons = {
       confirmed: <CheckCircle className="h-4 w-4 text-green-500" />,
+      confirmed_with_guest: <CheckCircle className="h-4 w-4 text-blue-500" />,
       declined: <XCircle className="h-4 w-4 text-red-500" />,
       pending: <Clock className="h-4 w-4 text-yellow-500" />,
       maybe: <Clock className="h-4 w-4 text-blue-500" />,
@@ -171,7 +178,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
     );
   }
 
-  const responseRate = stats.total > 0 ? Math.round(((stats.confirmed + stats.declined + stats.maybe) / stats.total) * 100) : 0;
+  const responseRate = stats.total > 0 ? Math.round(((stats.confirmed + stats.confirmedWithGuest + stats.declined + stats.maybe) / stats.total) * 100) : 0;
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -191,6 +198,26 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
               <span className="text-lg font-semibold text-gray-900">{t('guestList.confirmed').toUpperCase()}</span>
             </div>
             <span className="text-3xl font-bold text-green-600">{stats.confirmed}</span>
+          </div>
+        </div>
+
+        {/* MEHMON BILAN */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+              <span className="text-lg font-semibold text-gray-900">
+                {(() => {
+                  const translation = t('guestList.withGuest');
+                  // Check if translation returned the key itself (no translation found)
+                  if (translation === 'guestList.withGuest' || !translation) {
+                    return 'MEHMON BILAN';
+                  }
+                  return translation.toUpperCase();
+                })()}
+              </span>
+            </div>
+            <span className="text-3xl font-bold text-blue-600">{stats.confirmedWithGuest || 0}</span>
           </div>
         </div>
 
@@ -232,7 +259,16 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <MessageSquare className="w-4 h-4 text-purple-500" />
-              <span className="text-lg font-semibold text-gray-900">{(t('guestList.comments') || 'IZOHLAR').toUpperCase()}</span>
+              <span className="text-lg font-semibold text-gray-900">
+                {(() => {
+                  const translation = t('guestList.comments');
+                  // Check if translation returned the key itself (no translation found)
+                  if (translation === 'guestList.comments' || !translation) {
+                    return 'IZOHLAR';
+                  }
+                  return translation.toUpperCase();
+                })()}
+              </span>
             </div>
             <span className="text-3xl font-bold text-purple-600">{stats.withComments}</span>
           </div>
@@ -253,7 +289,7 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
         </div>
         <div className="mt-4 text-base text-gray-600">
           {t('guestList.responseStats', { 
-            responded: stats.confirmed + stats.declined + stats.maybe, 
+            responded: stats.confirmed + stats.confirmedWithGuest + stats.declined + stats.maybe, 
             total: stats.total 
           })}
         </div>
@@ -278,6 +314,16 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
             {[
               { key: 'all', label: t('guestList.all') },
               { key: 'confirmed', label: t('guestList.confirmed') },
+              { 
+                key: 'confirmed_with_guest', 
+                label: (() => {
+                  const translation = t('guestList.withGuest');
+                  if (translation === 'guestList.withGuest' || !translation) {
+                    return 'Mehmon bilan';
+                  }
+                  return translation;
+                })()
+              },
               { key: 'pending', label: t('guestList.pending') },
               { key: 'maybe', label: t('guestList.maybe') },
               { key: 'declined', label: t('guestList.declined') }
@@ -359,35 +405,13 @@ export function MobileGuestManager({ weddingId, weddingTitle = "Wedding", classN
                   </div>
                 )}
 
-                {/* Action Buttons */}
-                <div className="flex flex-col gap-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      onClick={() => handleStatusUpdate(guest.id, 'confirmed')}
-                      disabled={guest.rsvpStatus === 'confirmed'}
-                      className="h-12 text-lg font-medium text-green-600 border-green-300 hover:bg-green-50 disabled:opacity-50"
-                    >
-                      <CheckCircle className="h-5 w-5 mr-2" />
-                      {t('guestList.confirm')}
-                    </Button>
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      onClick={() => handleStatusUpdate(guest.id, 'declined')}
-                      disabled={guest.rsvpStatus === 'declined'}
-                      className="h-12 text-lg font-medium text-red-600 border-red-300 hover:bg-red-50 disabled:opacity-50"
-                    >
-                      <XCircle className="h-5 w-5 mr-2" />
-                      {t('guestList.decline')}
-                    </Button>
-                  </div>
+                {/* Action Buttons - Only Delete for Guest Managers */}
+                <div className="flex justify-center">
                   <Button
                     size="lg"
                     variant="destructive"
                     onClick={() => deleteGuestMutation.mutate(guest.id)}
-                    className="h-12 text-lg font-medium"
+                    className="h-12 text-lg font-medium w-full max-w-xs"
                   >
                     <Trash2 className="h-5 w-5 mr-2" />
                     {t('guestList.deleteGuest')}

@@ -1949,12 +1949,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/guests/:id", authenticateToken, async (req, res) => {
+  app.delete("/api/guests/:id", authenticateToken, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
+      const userId = req.user.userId;
       
-      // For now, we'll implement a simple delete
-      // In a real implementation, you'd want to check ownership and permissions
+      // First, get the guest to find the wedding it belongs to
+      const guest = await storage.getGuestById(id);
+      if (!guest) {
+        return res.status(404).json({ message: "Guest not found" });
+      }
+      
+      // Get the wedding to check ownership
+      const wedding = await storage.getWeddingById(guest.weddingId);
+      if (!wedding) {
+        return res.status(404).json({ message: "Wedding not found" });
+      }
+      
+      // Get user details
+      const user = await storage.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Check permissions: admin, wedding owner, or guest manager with wedding access
+      const isAdmin = user.isAdmin === true || user.role === 'admin';
+      const isOwner = wedding.userId === userId;
+      const hasGuestManagerAccess = user.role === 'guest_manager' && 
+        await storage.getUserWeddingPermissions(userId, guest.weddingId);
+      
+      if (!isAdmin && !isOwner && !hasGuestManagerAccess) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
       const deleted = await storage.deleteGuest(id);
       
       if (!deleted) {

@@ -96,10 +96,16 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
   // Analytics calculations
   const totalGuests = guests.length;
   const confirmedGuests = guests.filter(g => g.rsvpStatus === 'confirmed').length;
+  const confirmedWithGuestGuests = guests.filter(g => g.rsvpStatus === 'confirmed_with_guest').length;
   const pendingGuests = guests.filter(g => g.rsvpStatus === 'pending').length;
   const declinedGuests = guests.filter(g => g.rsvpStatus === 'declined').length;
+  const maybeGuests = guests.filter(g => g.rsvpStatus === 'maybe').length;
   const guestsWithComments = guests.filter(g => g.message && g.message.trim()).length;
-  const responseRate = totalGuests > 0 ? ((confirmedGuests + declinedGuests) / totalGuests) * 100 : 0;
+  
+  // Total attendees including +1 guests
+  const totalAttendees = confirmedGuests + (confirmedWithGuestGuests * 2); // Each confirmed_with_guest counts as 2 people
+  const allConfirmedGuests = confirmedGuests + confirmedWithGuestGuests;
+  const responseRate = totalGuests > 0 ? ((allConfirmedGuests + declinedGuests + maybeGuests) / totalGuests) * 100 : 0;
 
   // Filter guests based on search, status, and comments
   const filteredGuests = guests.filter(guest => {
@@ -120,33 +126,44 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
   const getStatusBadge = (status: string, responseText?: string | null, plusOne?: boolean) => {
     const variants = {
       confirmed: 'default',
+      confirmed_with_guest: 'default',
       pending: 'secondary',
       declined: 'destructive',
       maybe: 'outline'
     } as const;
     
-    // Determine display text based on current UI language
-    let displayText = t(`guests.status.${status}`); // Default fallback
+    // Determine display text based on status
+    let displayText = '';
+    let badgeColor = '';
     
-    if (status === 'confirmed' && plusOne) {
-      // "With guest" option
-      displayText = t('rsvp.confirmedWithGuestEmoji');
-    } else if (status === 'confirmed') {
-      // Regular confirmation
-      displayText = t('rsvp.confirmedEmoji');
-    } else if (status === 'declined') {
-      displayText = t('rsvp.declinedEmoji');
-    } else if (status === 'maybe') {
-      displayText = t('rsvp.maybeEmoji');
-    }
-    
-    // Fallback to responseText only if translation is not available
-    if (!displayText || displayText.includes('rsvp.')) {
-      displayText = responseText || t(`guests.status.${status}`);
+    switch (status) {
+      case 'confirmed':
+        displayText = '✅ Ha, albatta boraman!';
+        badgeColor = 'text-green-600 bg-green-50 border-green-200';
+        break;
+      case 'confirmed_with_guest':
+        displayText = '👥 Ha, mehmon bilan boraman';
+        badgeColor = 'text-blue-600 bg-blue-50 border-blue-200';
+        break;
+      case 'declined':
+        displayText = '❌ Afsus, kela olmayman';
+        badgeColor = 'text-red-600 bg-red-50 border-red-200';
+        break;
+      case 'maybe':
+        displayText = '😐 Hali aniq emas';
+        badgeColor = 'text-yellow-600 bg-yellow-50 border-yellow-200';
+        break;
+      case 'pending':
+        displayText = 'Kutilmoqda';
+        badgeColor = 'text-gray-600 bg-gray-50 border-gray-200';
+        break;
+      default:
+        displayText = responseText || status;
+        badgeColor = 'text-gray-600 bg-gray-50 border-gray-200';
     }
     
     return (
-      <Badge variant={variants[status as keyof typeof variants] || 'secondary'}>
+      <Badge variant="outline" className={badgeColor}>
         {displayText}
       </Badge>
     );
@@ -181,7 +198,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
   return (
     <div className="space-y-6">
       {/* Analytics Overview */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2">
@@ -191,6 +208,9 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
           </CardHeader>
           <CardContent className="pt-0">
             <div className="text-lg sm:text-2xl font-bold">{totalGuests}</div>
+            <div className="text-xs text-gray-500 mt-1">
+              {totalAttendees} {t('guestList.attendees') || 'attendees'}
+            </div>
           </CardContent>
         </Card>
 
@@ -198,7 +218,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2">
               <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
-              <span className="truncate">{t('guests.confirmed')}</span>
+              <span className="truncate">{t('guestList.confirmed')}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
@@ -209,8 +229,23 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2">
+              <Users className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
+              <span className="truncate">{t('guestList.withGuest')}</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="text-lg sm:text-2xl font-bold text-blue-500">{confirmedWithGuestGuests}</div>
+            <div className="text-xs text-gray-500 mt-1">
+              +{confirmedWithGuestGuests} {t('guestList.additional') || 'additional'}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2">
               <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600" />
-              <span className="truncate">{t('guests.pending')}</span>
+              <span className="truncate">{t('guestList.pending')}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
@@ -222,7 +257,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2">
               <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-purple-600" />
-              <span className="truncate">{t('guests.responseRate')}</span>
+              <span className="truncate">{t('guestList.responseRate')}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
@@ -357,7 +392,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
-                    placeholder="Search guests..."
+                    placeholder={t('guestList.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -367,14 +402,15 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Filter by status" />
+                      <SelectValue placeholder={t('guestList.filterByStatus') || 'Filter by status'} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">{t('guests.allStatuses')}</SelectItem>
-                      <SelectItem value="pending">{t('guests.status.pending')}</SelectItem>
-                      <SelectItem value="confirmed">{t('guests.status.confirmed')}</SelectItem>
-                      <SelectItem value="declined">{t('guests.status.declined')}</SelectItem>
-                      <SelectItem value="maybe">{t('guests.status.maybe')}</SelectItem>
+                      <SelectItem value="all">{t('guestList.all')}</SelectItem>
+                      <SelectItem value="pending">{t('guestList.pending')}</SelectItem>
+                      <SelectItem value="confirmed">{t('guestList.confirmed')}</SelectItem>
+                      <SelectItem value="confirmed_with_guest">{t('guestList.withGuest')}</SelectItem>
+                      <SelectItem value="declined">{t('guestList.declined')}</SelectItem>
+                      <SelectItem value="maybe">{t('guestList.maybe')}</SelectItem>
                     </SelectContent>
                   </Select>
                   
@@ -624,24 +660,40 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                       <div className="flex justify-between items-center">
                         <span className="flex items-center gap-2">
                           <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                          {t('guests.status.confirmed')}
+                          {t('guestList.confirmed')}
                         </span>
                         <span className="font-medium">{confirmedGuests}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                          {t('guestList.withGuest')}
+                        </span>
+                        <span className="font-medium">{confirmedWithGuestGuests}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="flex items-center gap-2">
                           <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                          {t('guests.status.pending')}
+                          {t('guestList.pending')}
                         </span>
                         <span className="font-medium">{pendingGuests}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="flex items-center gap-2">
                           <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                          {t('guests.status.declined')}
+                          {t('guestList.declined')}
                         </span>
                         <span className="font-medium">{declinedGuests}</span>
                       </div>
+                      {maybeGuests > 0 && (
+                        <div className="flex justify-between items-center">
+                          <span className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                            {t('guestList.maybe')}
+                          </span>
+                          <span className="font-medium">{maybeGuests}</span>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -655,7 +707,10 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
                       <div className="text-2xl font-bold">{responseRate.toFixed(1)}%</div>
                       <Progress value={responseRate} className="h-3" />
                       <p className="text-sm text-gray-600">
-                        {confirmedGuests + declinedGuests} {t('guests.outOf')} {totalGuests} {t('guests.guestsResponded')}
+                        {allConfirmedGuests + declinedGuests + maybeGuests} dan {totalGuests} mehmon javob berdi
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Jami keluvchilar: {totalAttendees} kishi
                       </p>
                     </div>
                   </CardContent>

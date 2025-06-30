@@ -33,6 +33,7 @@ export interface IStorage {
 
   // Guests
   createGuest(guest: InsertGuest): Promise<Guest>;
+  getGuestById(id: number): Promise<Guest | undefined>;
   getGuestsByWeddingId(weddingId: number): Promise<Guest[]>;
   updateGuestRSVP(guestId: number, update: RSVPUpdate): Promise<Guest | undefined>;
   deleteGuest(id: number): Promise<boolean>;
@@ -267,6 +268,10 @@ export class MemStorage implements IStorage {
     };
     this.guests.set(id, guest);
     return guest;
+  }
+
+  async getGuestById(id: number): Promise<Guest | undefined> {
+    return this.guests.get(id);
   }
 
   async getGuestsByWeddingId(weddingId: number): Promise<Guest[]> {
@@ -639,6 +644,11 @@ export class DatabaseStorage implements IStorage {
       .values(insertGuest)
       .returning();
     return guest;
+  }
+
+  async getGuestById(id: number): Promise<Guest | undefined> {
+    const [guest] = await db.select().from(guests).where(eq(guests.id, id));
+    return guest || undefined;
   }
 
   async getGuestsByWeddingId(weddingId: number): Promise<Guest[]> {

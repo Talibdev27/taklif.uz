@@ -67,15 +67,15 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
     onSuccess: () => {
       setIsSubmitted(true);
       toast({
-        title: "RSVP Updated!",
-        description: "Thank you for your response!",
+        title: t('rsvp.rsvpUpdated'),
+        description: t('rsvp.thankYouResponse'),
       });
       queryClient.invalidateQueries({ queryKey: [`/api/guests/public/${weddingId}`] });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to update RSVP. Please try again.",
+        title: t('rsvp.error'),
+        description: t('rsvp.failedToUpdate'),
         variant: "destructive",
       });
     },
@@ -85,8 +85,8 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
     e.preventDefault();
     if (!selectedGuest) {
       toast({
-        title: "Please select your name",
-        description: "Find and select your name from the guest list first.",
+        title: t('rsvp.pleaseSelectName'),
+        description: t('rsvp.selectNameDescription'),
         variant: "destructive",
       });
       return;
@@ -114,7 +114,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
             {t('rsvp.thankYou')}
           </h3>
           <p className="text-charcoal opacity-70">
-            We've received your RSVP and can't wait to celebrate with you!
+            {t('rsvp.thankYouMessage')}
           </p>
         </CardContent>
       </Card>
@@ -125,18 +125,18 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
     <Card className={`max-w-lg mx-auto ${className} shadow-2xl rounded-2xl`}>
       <CardHeader className="text-center bg-gray-50 p-8 rounded-t-2xl">
         <CardTitle className="font-playfair text-4xl text-gray-800">{t('rsvp.title')}</CardTitle>
-        <p className="text-gray-600 font-cormorant text-lg">Let us know if you can make it!</p>
+        <p className="text-gray-600 font-cormorant text-lg">{t('rsvp.letUsKnow')}</p>
       </CardHeader>
       <CardContent className="p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Guest Search */}
           <div className="space-y-4">
-            <Label className="text-lg font-semibold text-gray-700">Find Your Name</Label>
+            <Label className="text-lg font-semibold text-gray-700">{t('rsvp.findYourName')}</Label>
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
                 type="text"
-                placeholder="Search by name or email..."
+                placeholder={t('rsvp.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -147,7 +147,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
             {searchTerm && (
               <div className="max-h-40 overflow-y-auto border rounded-lg">
                 {isLoading ? (
-                  <div className="p-4 text-center text-gray-500">Loading guests...</div>
+                  <div className="p-4 text-center text-gray-500">{t('rsvp.loadingGuests')}</div>
                 ) : filteredGuests.length > 0 ? (
                   filteredGuests.map((guest) => (
                     <button
@@ -177,7 +177,7 @@ export function EnhancedRSVPForm({ weddingId, className = '' }: EnhancedRSVPForm
                   ))
                 ) : (
                   <div className="p-4 text-center text-gray-500">
-                    No guests found. Try a different search term.
+                    {t('rsvp.noGuestsFound')}
                   </div>
                 )}
               </div>
