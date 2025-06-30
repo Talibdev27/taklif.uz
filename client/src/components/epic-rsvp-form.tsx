@@ -29,9 +29,11 @@ type RSVPFormData = z.infer<typeof rsvpFormSchema>;
 
 interface EpicRSVPFormProps {
   weddingId: number;
+  primaryColor?: string;
+  accentColor?: string;
 }
 
-export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
+export function EpicRSVPForm({ weddingId, primaryColor = '#1976d2', accentColor = '#1565c0' }: EpicRSVPFormProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -91,7 +93,10 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
   if (isSubmitted) {
     return (
       <div className="text-center p-8">
-        <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div 
+          className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+          style={{ background: `linear-gradient(to right, ${primaryColor}, ${accentColor})` }}
+        >
           <span className="text-white text-2xl">✓</span>
         </div>
         <h3 className="text-xl font-semibold text-gray-800 mb-2">{t('rsvp.thankYou')}</h3>
@@ -113,7 +118,19 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
                 <Input 
                   placeholder={t('rsvp.enterFullName')} 
                   {...field} 
-                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  className="border-gray-300"
+                  style={{
+                    '--tw-ring-color': primaryColor + '50',
+                    borderColor: field.value ? primaryColor + '30' : undefined
+                  } as any}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = primaryColor;
+                    e.target.style.boxShadow = `0 0 0 3px ${primaryColor}20`;
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = field.value ? primaryColor + '30' : '#d1d5db';
+                    e.target.style.boxShadow = 'none';
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -137,19 +154,39 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
                   className="flex flex-col space-y-3"
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="confirmed" id="confirmed" className="border-blue-500 text-blue-600" />
+                    <RadioGroupItem 
+                      value="confirmed" 
+                      id="confirmed" 
+                      className="border-2"
+                      style={{ borderColor: primaryColor, color: primaryColor }}
+                    />
                     <Label htmlFor="confirmed" className="text-gray-700">{t('rsvp.confirmedEmoji')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="confirmed_with_guest" id="confirmed_with_guest" className="border-blue-500 text-blue-600" />
+                    <RadioGroupItem 
+                      value="confirmed_with_guest" 
+                      id="confirmed_with_guest" 
+                      className="border-2"
+                      style={{ borderColor: primaryColor, color: primaryColor }}
+                    />
                     <Label htmlFor="confirmed_with_guest" className="text-gray-700">{t('rsvp.confirmedWithGuest')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="declined" id="declined" className="border-blue-500 text-blue-600" />
+                    <RadioGroupItem 
+                      value="declined" 
+                      id="declined" 
+                      className="border-2"
+                      style={{ borderColor: primaryColor, color: primaryColor }}
+                    />
                     <Label htmlFor="declined" className="text-gray-700">{t('rsvp.declinedEmoji')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="maybe" id="maybe" className="border-blue-500 text-blue-600" />
+                    <RadioGroupItem 
+                      value="maybe" 
+                      id="maybe" 
+                      className="border-2"
+                      style={{ borderColor: primaryColor, color: primaryColor }}
+                    />
                     <Label htmlFor="maybe" className="text-gray-700">{t('rsvp.maybeEmoji')}</Label>
                   </div>
                 </RadioGroup>
@@ -170,7 +207,15 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
                   placeholder={t('rsvp.shareMessage')} 
                   {...field} 
                   value={field.value || ''}
-                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500 min-h-[80px]"
+                  className="border-gray-300 min-h-[80px]"
+                  onFocus={(e) => {
+                    e.target.style.borderColor = primaryColor;
+                    e.target.style.boxShadow = `0 0 0 3px ${primaryColor}20`;
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = field.value ? primaryColor + '30' : '#d1d5db';
+                    e.target.style.boxShadow = 'none';
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -180,7 +225,17 @@ export function EpicRSVPForm({ weddingId }: EpicRSVPFormProps) {
 
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          className="w-full text-white font-medium py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          style={{ 
+            background: `linear-gradient(to right, ${primaryColor}, ${accentColor})`,
+            border: 'none'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.opacity = '0.9';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.opacity = '1';
+          }}
           disabled={submitRSVP.isPending}
         >
           {submitRSVP.isPending ? t('common.loading') : t('rsvp.submit')}

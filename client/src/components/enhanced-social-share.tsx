@@ -10,9 +10,11 @@ interface EnhancedSocialShareProps {
   weddingUrl: string;
   coupleName: string;
   className?: string;
+  primaryColor?: string;
+  accentColor?: string;
 }
 
-export function EnhancedSocialShare({ weddingUrl, coupleName, className = '' }: EnhancedSocialShareProps) {
+export function EnhancedSocialShare({ weddingUrl, coupleName, className = '', primaryColor = '#D4B08C', accentColor = '#89916B' }: EnhancedSocialShareProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [showMore, setShowMore] = useState(false);
@@ -64,7 +66,7 @@ export function EnhancedSocialShare({ weddingUrl, coupleName, className = '' }: 
     <Card className={`wedding-card ${className}`}>
       <CardContent className="p-6">
         <div className="flex items-center gap-3 mb-4">
-          <Share2 className="w-5 h-5 text-[#D4B08C]" />
+          <Share2 className="w-5 h-5" style={{ color: primaryColor }} />
           <h3 className="text-lg font-semibold text-[#2C3338]">{t('share.title')}</h3>
         </div>
         
@@ -80,7 +82,19 @@ export function EnhancedSocialShare({ weddingUrl, coupleName, className = '' }: 
             <Button
               variant="outline"
               onClick={shareToWhatsApp}
-              className="flex items-center gap-2 h-12 border-[#D4B08C]/20 hover:bg-[#25D366]/5 hover:border-[#25D366] transition-colors"
+              className="flex items-center gap-2 h-12 transition-colors"
+              style={{ 
+                borderColor: `${primaryColor}30`,
+                color: '#25D366'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#25D36610';
+                e.currentTarget.style.borderColor = '#25D366';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = `${primaryColor}30`;
+              }}
             >
               <SiWhatsapp className="w-4 h-4 text-[#25D366]" />
               <span className="text-sm">{t('share.whatsapp')}</span>
@@ -89,7 +103,19 @@ export function EnhancedSocialShare({ weddingUrl, coupleName, className = '' }: 
             <Button
               variant="outline"
               onClick={shareToTelegram}
-              className="flex items-center gap-2 h-12 border-[#D4B08C]/20 hover:bg-[#0088cc]/5 hover:border-[#0088cc] transition-colors"
+              className="flex items-center gap-2 h-12 transition-colors"
+              style={{ 
+                borderColor: `${primaryColor}30`,
+                color: '#0088cc'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#0088cc10';
+                e.currentTarget.style.borderColor = '#0088cc';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = `${primaryColor}30`;
+              }}
             >
               <SiTelegram className="w-4 h-4 text-[#0088cc]" />
               <span className="text-sm">{t('share.telegram')}</span>
@@ -98,7 +124,19 @@ export function EnhancedSocialShare({ weddingUrl, coupleName, className = '' }: 
             <Button
               variant="outline"
               onClick={shareToInstagram}
-              className="flex items-center gap-2 h-12 border-[#D4B08C]/20 hover:bg-[#E4405F]/5 hover:border-[#E4405F] transition-colors"
+              className="flex items-center gap-2 h-12 transition-colors"
+              style={{ 
+                borderColor: `${primaryColor}30`,
+                color: '#E4405F'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#E4405F10';
+                e.currentTarget.style.borderColor = '#E4405F';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = `${primaryColor}30`;
+              }}
             >
               <Instagram className="w-4 h-4 text-[#E4405F]" />
               <span className="text-sm">{t('share.instagram')}</span>
@@ -107,9 +145,21 @@ export function EnhancedSocialShare({ weddingUrl, coupleName, className = '' }: 
             <Button
               variant="outline"
               onClick={copyToClipboard}
-              className="flex items-center gap-2 h-12 border-[#D4B08C]/20 hover:bg-[#D4B08C]/5 hover:border-[#D4B08C] transition-colors"
+              className="flex items-center gap-2 h-12 transition-colors"
+              style={{ 
+                borderColor: `${primaryColor}30`,
+                color: primaryColor
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = `${primaryColor}10`;
+                e.currentTarget.style.borderColor = primaryColor;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = `${primaryColor}30`;
+              }}
             >
-              <Copy className="w-4 h-4 text-[#D4B08C]" />
+              <Copy className="w-4 h-4" style={{ color: primaryColor }} />
               <span className="text-sm">{t('share.copyLink')}</span>
             </Button>
           </div>
@@ -119,19 +169,38 @@ export function EnhancedSocialShare({ weddingUrl, coupleName, className = '' }: 
         <Button
           variant="ghost"
           onClick={() => setShowMore(!showMore)}
-          className="w-full text-[#D4B08C] hover:bg-[#D4B08C]/5 text-sm"
+          className="w-full text-sm"
+          style={{ color: primaryColor }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = `${primaryColor}10`;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
         >
           {showMore ? t('share.showLess') : t('share.moreOptions')}
         </Button>
 
         {/* Additional Share Options */}
         {showMore && (
-          <div className="mt-4 pt-4 border-t border-[#D4B08C]/20">
+          <div className="mt-4 pt-4 border-t" style={{ borderColor: `${primaryColor}30` }}>
             <div className="grid grid-cols-2 gap-3">
               <Button
                 variant="outline"
                 onClick={shareToFacebook}
-                className="flex items-center gap-2 h-12 border-[#D4B08C]/20 hover:bg-[#1877F2]/5 hover:border-[#1877F2] transition-colors"
+                className="flex items-center gap-2 h-12 transition-colors"
+                style={{ 
+                  borderColor: `${primaryColor}30`,
+                  color: '#1877F2'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#1877F210';
+                  e.currentTarget.style.borderColor = '#1877F2';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.borderColor = `${primaryColor}30`;
+                }}
               >
                 <SiFacebook className="w-4 h-4 text-[#1877F2]" />
                 <span className="text-sm">{t('share.facebook')}</span>
@@ -144,9 +213,21 @@ export function EnhancedSocialShare({ weddingUrl, coupleName, className = '' }: 
                   const body = encodeURIComponent(`${shareText}\n\n${fullUrl}`);
                   window.open(`mailto:?subject=${subject}&body=${body}`);
                 }}
-                className="flex items-center gap-2 h-12 border-[#D4B08C]/20 hover:bg-[#D4B08C]/5 hover:border-[#D4B08C] transition-colors"
+                className="flex items-center gap-2 h-12 transition-colors"
+                style={{ 
+                  borderColor: `${primaryColor}30`,
+                  color: primaryColor
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = `${primaryColor}10`;
+                  e.currentTarget.style.borderColor = primaryColor;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.borderColor = `${primaryColor}30`;
+                }}
               >
-                <ExternalLink className="w-4 h-4 text-[#D4B08C]" />
+                <ExternalLink className="w-4 h-4" style={{ color: primaryColor }} />
                 <span className="text-sm">Email</span>
               </Button>
             </div>

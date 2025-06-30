@@ -74,11 +74,7 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
   });
 
   const addGuestMutation = useMutation({
-    mutationFn: (data: AddGuestFormData) => apiRequest('/api/guests', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    }),
+    mutationFn: (data: AddGuestFormData) => apiRequest('POST', '/api/guests', data),
     onSuccess: () => {
       toast({
         title: t('guests.guestAdded'),
@@ -170,12 +166,15 @@ export function GuestManagementDashboard({ weddingId }: GuestManagementProps) {
     return preview;
   };
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return '';
+  const formatDate = (date: string | Date | null) => {
+    if (!date) return '';
     try {
-      return new Date(dateString).toLocaleDateString();
+      if (date instanceof Date) {
+        return date.toLocaleDateString();
+      }
+      return new Date(date).toLocaleDateString();
     } catch {
-      return dateString;
+      return typeof date === 'string' ? date : '';
     }
   };
 

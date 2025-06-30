@@ -10,9 +10,11 @@ import { useTranslation } from 'react-i18next';
 
 interface GuestBookFormProps {
   weddingId: number;
+  primaryColor?: string;
+  accentColor?: string;
 }
 
-export function GuestBookForm({ weddingId }: GuestBookFormProps) {
+export function GuestBookForm({ weddingId, primaryColor = '#1976d2', accentColor = '#1565c0' }: GuestBookFormProps) {
   const { t } = useTranslation();
   const [guestName, setGuestName] = useState('');
   const [message, setMessage] = useState('');
@@ -83,7 +85,17 @@ export function GuestBookForm({ weddingId }: GuestBookFormProps) {
           </div>
           <Button 
             type="submit" 
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full text-white font-medium transition-all duration-300"
+            style={{ 
+              background: `linear-gradient(to right, ${primaryColor}, ${accentColor})`,
+              border: 'none'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = '0.9';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = '1';
+            }}
             disabled={createEntryMutation.isPending}
           >
             {createEntryMutation.isPending ? t('common.loading') : t('guestBook.form.submit')}

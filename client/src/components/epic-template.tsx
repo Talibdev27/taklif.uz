@@ -79,6 +79,9 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
     }
   };
 
+  const primaryColor = wedding?.primaryColor || '#1976d2';
+  const accentColor = wedding?.accentColor || '#1565c0';
+
   return (
     <div className="min-h-screen">
       {/* Navigation - Fixed at top */}
@@ -94,7 +97,17 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
               <button
                 key={id}
                 onClick={() => scrollToSection(id)}
-                className="flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 text-blue-600 hover:bg-blue-50 text-sm font-medium"
+                className="flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 text-sm font-medium hover:opacity-80"
+                style={{ 
+                  color: primaryColor,
+                  backgroundColor: `${primaryColor}10`
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = `${primaryColor}20`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = `${primaryColor}10`;
+                }}
               >
                 <Icon className="w-4 h-4" />
                 <span className="hidden md:inline">{label}</span>
@@ -105,17 +118,37 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       </nav>
 
       {/* Hero Section - Epic template with card layout */}
-      <section id="home" className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 py-20">
+      <section 
+        id="home" 
+        className="min-h-screen flex items-center justify-center px-4 py-20"
+        style={{ 
+          background: `linear-gradient(135deg, ${primaryColor}10, ${accentColor}10)`
+        }}
+      >
         <div className="w-full max-w-4xl bg-white rounded-[20px] shadow-2xl overflow-hidden">
           
           {/* Photo Section */}
-          <div className="h-96 bg-gradient-to-br from-blue-400 to-blue-500 relative flex items-center justify-center overflow-hidden">
+          <div 
+            className="h-96 relative flex items-center justify-center overflow-hidden"
+            style={{ 
+              background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`
+            }}
+          >
             
             {/* Decorative elements */}
             <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute top-5 left-5 w-16 h-16 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full opacity-30 transform rotate-45"></div>
-              <div className="absolute top-8 right-8 w-12 h-12 bg-gradient-to-br from-blue-200 to-blue-300 rounded-full opacity-30 transform -rotate-45"></div>
-              <div className="absolute bottom-20 left-8 w-10 h-10 bg-gradient-to-br from-green-300 to-blue-300 rounded-full opacity-30 transform rotate-90"></div>
+              <div 
+                className="absolute top-5 left-5 w-16 h-16 rounded-full opacity-30 transform rotate-45"
+                style={{ background: `linear-gradient(135deg, ${primaryColor}60, ${accentColor}60)` }}
+              ></div>
+              <div 
+                className="absolute top-8 right-8 w-12 h-12 rounded-full opacity-30 transform -rotate-45"
+                style={{ background: `linear-gradient(135deg, ${primaryColor}40, ${accentColor}40)` }}
+              ></div>
+              <div 
+                className="absolute bottom-20 left-8 w-10 h-10 rounded-full opacity-30 transform rotate-90"
+                style={{ background: `linear-gradient(135deg, ${accentColor}60, ${primaryColor}60)` }}
+              ></div>
             </div>
 
             {wedding?.couplePhotoUrl ? (
@@ -136,9 +169,21 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
 
           {/* Info Section */}
           <div className="bg-gradient-to-br from-gray-50 to-white p-10 text-center relative">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full"></div>
+            <div 
+              className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 rounded-full"
+              style={{ background: `linear-gradient(to right, ${primaryColor}, ${accentColor})` }}
+            ></div>
             
-            <h1 className="text-4xl lg:text-5xl font-light bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-4 tracking-wide">
+            <h1 
+              className="text-4xl lg:text-5xl font-light mb-4 tracking-wide"
+              style={{ 
+                color: primaryColor,
+                background: `linear-gradient(to right, ${primaryColor}, ${accentColor})`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
               {wedding?.bride || 'Bride'} & {wedding?.groom || 'Groom'}
             </h1>
             
@@ -158,7 +203,11 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
                 { value: timeLeft.hours, label: t('countdown.hours') },
                 { value: timeLeft.minutes, label: t('countdown.minutes') }
               ].map((item, index) => (
-                <div key={index} className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-[15px] p-5 min-w-[80px] shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+                <div 
+                  key={index} 
+                  className="rounded-[15px] p-5 min-w-[80px] shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
+                  style={{ background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})` }}
+                >
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-white/5 rounded-[15px]"></div>
                   <div className="text-3xl font-bold text-white relative z-10">{item.value}</div>
                   <div className="text-xs text-white/90 uppercase tracking-wider font-medium mt-2 relative z-10">{item.label}</div>
@@ -179,7 +228,17 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
                   }
                 }
               }}
-              className="inline-block bg-blue-50 text-gray-700 px-6 py-3 rounded-full border-2 border-blue-200 hover:bg-blue-100 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+              className="inline-block text-gray-700 px-6 py-3 rounded-full border-2 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+              style={{ 
+                backgroundColor: `${primaryColor}10`,
+                borderColor: `${primaryColor}30`
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = `${primaryColor}20`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = `${primaryColor}10`;
+              }}
             >
               <MapPin className="inline w-4 h-4 mr-2" />
               {wedding?.venue || t('wedding.venue')}
@@ -189,18 +248,24 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       </section>
 
       {/* Dear Guests Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
+      <section 
+        className="py-20"
+        style={{ background: `linear-gradient(135deg, ${primaryColor}08, ${accentColor}08)` }}
+      >
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-light mb-8 text-gray-800">{t('sections.dearGuests')}</h2>
           
           {wedding?.dearGuestMessage && (
             <div className="max-w-3xl mx-auto">
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-blue-100">
+              <div 
+                className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border"
+                style={{ borderColor: `${primaryColor}20` }}
+              >
                 <p className="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap">
                   {wedding.dearGuestMessage}
                 </p>
                 <div className="mt-6 text-right">
-                  <p className="text-blue-600 font-medium">
+                  <p className="font-medium" style={{ color: primaryColor }}>
                     {wedding?.bride} & {wedding?.groom}
                   </p>
                 </div>
@@ -211,10 +276,23 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       </section>
 
       {/* RSVP Section */}
-      <section id="rsvp" className="py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
+      <section 
+        id="rsvp" 
+        className="py-20"
+        style={{ background: `linear-gradient(135deg, ${primaryColor}08, ${accentColor}15)` }}
+      >
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-light mb-4 bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+            <h2 
+              className="text-3xl md:text-4xl font-light mb-4"
+              style={{ 
+                color: primaryColor,
+                background: `linear-gradient(to right, ${primaryColor}, ${accentColor})`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
               {t('rsvp.title')}
             </h2>
             <p className="text-gray-700 max-w-2xl mx-auto text-lg">
@@ -223,8 +301,15 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
           </div>
           
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-blue-100">
-              <EpicRSVPForm weddingId={wedding.id} />
+            <div 
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border"
+              style={{ borderColor: `${primaryColor}20` }}
+            >
+              <EpicRSVPForm 
+                weddingId={wedding.id} 
+                primaryColor={primaryColor}
+                accentColor={accentColor}
+              />
             </div>
           </div>
         </div>
@@ -233,14 +318,26 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       {/* Wedding Details Section */}
       <section id="details" className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-light text-center mb-16 bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+          <h2 
+            className="text-3xl md:text-4xl font-light text-center mb-16"
+            style={{ 
+              color: primaryColor,
+              background: `linear-gradient(to right, ${primaryColor}, ${accentColor})`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
             {t('sections.weddingDetails')}
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
             {/* When */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg border border-blue-100">
-              <Calendar className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+            <div 
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg border"
+              style={{ borderColor: `${primaryColor}20` }}
+            >
+              <Calendar className="w-12 h-12 mx-auto mb-4" style={{ color: primaryColor }} />
               <h3 className="text-xl font-semibold mb-4 text-gray-800">{t('details.when')}</h3>
               <p className="text-gray-700 text-lg mb-2">
                 {wedding?.weddingDate ? format(new Date(wedding.weddingDate), 'd MMMM yyyy', { locale: getDateLocale() }) : t('details.dateTBD')}
@@ -251,8 +348,11 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
             </div>
 
             {/* Where */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg border border-blue-100">
-              <MapPin className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+            <div 
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg border"
+              style={{ borderColor: `${primaryColor}20` }}
+            >
+              <MapPin className="w-12 h-12 mx-auto mb-4" style={{ color: primaryColor }} />
               <h3 className="text-xl font-semibold mb-4 text-gray-800">{t('details.where')}</h3>
               <p className="text-gray-700 text-lg mb-2">{wedding?.venue || t('wedding.venue')}</p>
               <p className="text-gray-600 mb-4">{wedding?.venueAddress}</p>
@@ -270,7 +370,8 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
                       }
                     }
                   }}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+                  className="px-6 py-2 text-white rounded-full transition-colors hover:opacity-90"
+                  style={{ backgroundColor: primaryColor }}
                   disabled={!wedding?.mapPinUrl && !wedding?.venueAddress}
                 >
                   {t('details.showOnMap')}
@@ -289,6 +390,8 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
               <EnhancedSocialShare
                 weddingUrl={wedding.uniqueUrl}
                 coupleName={`${wedding.bride} & ${wedding.groom}`}
+                primaryColor={primaryColor}
+                accentColor={accentColor}
               />
             </div>
           </div>
@@ -296,10 +399,23 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       </section>
 
       {/* Guest Book Section */}
-      <section id="guestbook" className="py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
+      <section 
+        id="guestbook" 
+        className="py-20"
+        style={{ background: `linear-gradient(135deg, ${primaryColor}08, ${accentColor}15)` }}
+      >
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-light mb-4 bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+            <h2 
+              className="text-3xl md:text-4xl font-light mb-4"
+              style={{ 
+                color: primaryColor,
+                background: `linear-gradient(to right, ${primaryColor}, ${accentColor})`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
               {t('sections.guestBook')}
             </h2>
             <p className="text-gray-700 max-w-2xl mx-auto text-lg">
@@ -309,18 +425,35 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
           
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-blue-100">
+              <div 
+                className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border"
+                style={{ borderColor: `${primaryColor}20` }}
+              >
                 <h3 className="text-xl font-semibold mb-6 text-gray-800">{t('guestBook.leaveMessage')}</h3>
-                <GuestBookForm weddingId={wedding.id} />
+                <GuestBookForm 
+                  weddingId={wedding.id}
+                  primaryColor={primaryColor}
+                  accentColor={accentColor}
+                />
               </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-blue-100">
+              <div 
+                className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border"
+                style={{ borderColor: `${primaryColor}20` }}
+              >
                 <h3 className="text-xl font-semibold mb-6 text-gray-800">{t('guestBook.messages')}</h3>
                 <div className="space-y-4 max-h-96 overflow-y-auto">
                   {guestBookEntries.length > 0 ? (
                     guestBookEntries.map((entry) => (
-                      <div key={entry.id} className="bg-blue-50/80 p-6 rounded-2xl border border-blue-100">
+                      <div 
+                        key={entry.id} 
+                        className="p-6 rounded-2xl border"
+                        style={{ 
+                          backgroundColor: `${primaryColor}10`,
+                          borderColor: `${primaryColor}20`
+                        }}
+                      >
                         <p className="text-gray-700 mb-3">{entry.message}</p>
-                        <p className="text-blue-600 font-medium">— {entry.guestName}</p>
+                        <p className="font-medium" style={{ color: primaryColor }}>— {entry.guestName}</p>
                       </div>
                     ))
                   ) : (
@@ -336,7 +469,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
       {/* Footer */}
       <footer className="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12">
         <div className="container mx-auto px-4 text-center">
-          <Heart className="w-8 h-8 text-blue-400 mx-auto mb-4" />
+          <Heart className="w-8 h-8 mx-auto mb-4" style={{ color: primaryColor }} />
           <h3 className="text-2xl font-light mb-2">
             {wedding?.bride} & {wedding?.groom}
           </h3>
@@ -354,7 +487,14 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
                 href="https://t.me/link_taklif" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-full transition-colors flex items-center space-x-2"
+                className="px-6 py-3 rounded-full transition-colors flex items-center space-x-2 text-white"
+                style={{ backgroundColor: primaryColor }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = '0.9';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = '1';
+                }}
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
@@ -368,7 +508,7 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
                 className="bg-pink-600 hover:bg-pink-700 px-6 py-3 rounded-full transition-colors flex items-center space-x-2"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.40z"/>
                 </svg>
                 <span>Instagram</span>
               </a>
@@ -377,8 +517,8 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
 
           <div className="flex items-center justify-center text-gray-400 text-sm">
             <span>{t('footer.poweredBy')}</span>
-            <Heart className="inline h-4 w-4 text-blue-400 mx-2" />
-            <span className="font-semibold text-blue-400">Taklif</span>
+            <Heart className="inline h-4 w-4 mx-2" style={{ color: primaryColor }} />
+            <span className="font-semibold" style={{ color: primaryColor }}>Taklif</span>
           </div>
         </div>
       </footer>

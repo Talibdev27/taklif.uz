@@ -36,7 +36,9 @@ export default function AdminDashboard() {
     story: '',
     dearGuestMessage: '',
     couplePhotoUrl: '',
-    defaultLanguage: 'en'
+    defaultLanguage: 'en',
+    primaryColor: '#1976d2',
+    accentColor: '#1565c0'
   });
 
   const handleCouplePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +59,7 @@ export default function AdminDashboard() {
 
       if (response.ok) {
         const result = await response.json();
-        setNewWedding({...newWedding, couplePhotoUrl: result.url});
+        setNewWedding(prev => ({...prev, couplePhotoUrl: result.url}));
         toast({
           title: "Photo uploaded successfully",
           description: "Couple photo has been uploaded and will be used as the hero image."
@@ -253,7 +255,9 @@ export default function AdminDashboard() {
         story: '',
         dearGuestMessage: '',
         couplePhotoUrl: '',
-        defaultLanguage: 'uz'
+        defaultLanguage: 'uz',
+        primaryColor: '#1976d2',
+        accentColor: '#1565c0'
       });
     },
     onError: (error: any) => {
@@ -465,7 +469,9 @@ export default function AdminDashboard() {
       story: '',
       dearGuestMessage: '',
       couplePhotoUrl: '',
-      defaultLanguage: 'en'
+      defaultLanguage: 'en',
+      primaryColor: '#1976d2',
+      accentColor: '#1565c0'
     });
   };
 
@@ -1196,6 +1202,77 @@ export default function AdminDashboard() {
                         <option value="bohoChic">Boho Chic</option>
                       </select>
                     </div>
+
+                    {/* Epic Template Color Customization */}
+                    {newWedding.template === 'epic' && (
+                      <div className="space-y-4 p-4 border border-blue-200 rounded-lg bg-blue-50/30">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <h4 className="text-sm font-semibold text-blue-700">Epic Template Colors</h4>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                              Primary Color
+                            </label>
+                            <div className="flex items-center space-x-3">
+                              <input
+                                type="color"
+                                value={newWedding.primaryColor}
+                                onChange={(e) => handleFormChange('primaryColor', e.target.value)}
+                                className="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer"
+                              />
+                              <Input
+                                value={newWedding.primaryColor}
+                                onChange={(e) => handleFormChange('primaryColor', e.target.value)}
+                                placeholder="#1976d2"
+                                className="flex-1"
+                              />
+                            </div>
+                            <p className="text-xs text-gray-500 mt-1">Used for main elements and countdown</p>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-[#2C3338] mb-2">
+                              Accent Color
+                            </label>
+                            <div className="flex items-center space-x-3">
+                              <input
+                                type="color"
+                                value={newWedding.accentColor}
+                                onChange={(e) => handleFormChange('accentColor', e.target.value)}
+                                className="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer"
+                              />
+                              <Input
+                                value={newWedding.accentColor}
+                                onChange={(e) => handleFormChange('accentColor', e.target.value)}
+                                placeholder="#1565c0"
+                                className="flex-1"
+                              />
+                            </div>
+                            <p className="text-xs text-gray-500 mt-1">Used for buttons and highlights</p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between p-3 bg-blue-100/50 rounded-lg border border-blue-200">
+                          <div className="text-sm">
+                            <span className="font-medium text-blue-700">Preview:</span>
+                            <span className="ml-2 text-gray-600">Colors will be applied to your Epic template</span>
+                          </div>
+                          <div className="flex space-x-2">
+                            <div 
+                              className="w-6 h-6 rounded-full border border-white shadow-sm"
+                              style={{ backgroundColor: newWedding.primaryColor }}
+                            ></div>
+                            <div 
+                              className="w-6 h-6 rounded-full border border-white shadow-sm"
+                              style={{ backgroundColor: newWedding.accentColor }}
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     <div>
                       <label className="block text-sm font-medium text-[#2C3338] mb-2">
