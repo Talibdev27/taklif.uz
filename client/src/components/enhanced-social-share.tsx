@@ -49,11 +49,32 @@ export function EnhancedSocialShare({ weddingUrl, coupleName, className = '', pr
   };
 
   const shareToInstagram = () => {
-    // Instagram doesn't support direct link sharing, so we copy the link
+    // Copy link to clipboard first
     copyToClipboard();
+    
+    // Try to open Instagram
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // Try to open Instagram app on mobile
+      try {
+        window.location.href = 'instagram://';
+        // Fallback to web version if app doesn't open
+        setTimeout(() => {
+          window.open('https://www.instagram.com/', '_blank');
+        }, 1000);
+      } catch (error) {
+        window.open('https://www.instagram.com/', '_blank');
+      }
+    } else {
+      // Open Instagram web version on desktop
+      window.open('https://www.instagram.com/', '_blank');
+    }
+    
     toast({
       title: "Instagram",
-      description: "Link copied! Share it in your Instagram story or post.",
+      description: t('share.linkCopied') + " " + (isMobile ? t('share.instagramOpened') : t('share.instagramWebOpened')),
+      duration: 4000,
     });
   };
 

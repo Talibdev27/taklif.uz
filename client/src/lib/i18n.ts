@@ -178,6 +178,8 @@ const resources = {
       "share.linkCopied": "Link Copied!",
       "share.linkCopiedDesc": "Wedding link has been copied to clipboard",
       "share.copyError": "Failed to copy link",
+      "share.instagramOpened": "Instagram app opened.",
+      "share.instagramWebOpened": "Instagram website opened.",
 
       // Guest Manager
       "guestManager.weddingManagement": "Wedding Management",
@@ -405,6 +407,8 @@ const resources = {
       "share.linkCopied": "Ссылка скопирована!",
       "share.linkCopiedDesc": "Ссылка на свадьбу скопирована в буфер обмена",
       "share.copyError": "Не удалось скопировать ссылку",
+      "share.instagramOpened": "Приложение Instagram открыто.",
+      "share.instagramWebOpened": "Веб-сайт Instagram открыт.",
 
       // Guest Manager
       "guestManager.weddingManagement": "Управление Свадьбами",
@@ -632,6 +636,8 @@ const resources = {
       "share.linkCopied": "Havola Nusxalandi!",
       "share.linkCopiedDesc": "To'y havolasi buferga nusxalandi",
       "share.copyError": "Havolani nusxalashda xatolik",
+      "share.instagramOpened": "Instagram ilovasi ochildi.",
+      "share.instagramWebOpened": "Instagram veb-sayti ochildi.",
 
       // Guest Manager
       "guestManager.weddingManagement": "To'ylarni Boshqarish",
