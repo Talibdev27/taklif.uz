@@ -225,36 +225,38 @@ export function EpicTemplate({ wedding }: EpicTemplateProps) {
               ))}
             </div>
 
-            {/* Venue Button - Mobile Optimized */}
-            <div 
-              onClick={() => {
-                const mapUrl = wedding?.mapPinUrl || wedding?.venueAddress;
-                if (mapUrl) {
-                  // If it's already a full URL, open it directly
-                  if (mapUrl.startsWith('http')) {
-                    window.open(mapUrl, '_blank');
-                  } else {
-                    // Otherwise, create a Google Maps search URL
-                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapUrl)}`, '_blank');
+            {/* Venue Button - Centered and Balanced */}
+            <div className="flex justify-center">
+              <div 
+                onClick={() => {
+                  const mapUrl = wedding?.mapPinUrl || wedding?.venueAddress;
+                  if (mapUrl) {
+                    // If it's already a full URL, open it directly
+                    if (mapUrl.startsWith('http')) {
+                      window.open(mapUrl, '_blank');
+                    } else {
+                      // Otherwise, create a Google Maps search URL
+                      window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapUrl)}`, '_blank');
+                    }
                   }
-                }
-              }}
-              className="inline-block text-gray-700 px-4 sm:px-6 py-2 sm:py-3 rounded-full border-2 hover:-translate-y-1 transition-all duration-300 cursor-pointer text-sm sm:text-base"
-              style={{ 
-                backgroundColor: `${primaryColor}10`,
-                borderColor: `${primaryColor}30`
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = `${primaryColor}20`;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = `${primaryColor}10`;
-              }}
-            >
-              <MapPin className="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="truncate max-w-[200px] sm:max-w-none inline-block">
-                {wedding?.venue || t('wedding.venue')}
-              </span>
+                }}
+                className="flex items-center justify-center text-gray-700 px-4 sm:px-6 py-2 sm:py-3 rounded-full border-2 hover:-translate-y-1 transition-all duration-300 cursor-pointer text-sm sm:text-base max-w-xs"
+                style={{ 
+                  backgroundColor: `${primaryColor}10`,
+                  borderColor: `${primaryColor}30`
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = `${primaryColor}20`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = `${primaryColor}10`;
+                }}
+              >
+                <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 flex-shrink-0" />
+                <span className="truncate">
+                  {wedding?.venue || t('wedding.venue')}
+                </span>
+              </div>
             </div>
           </div>
         </div>
