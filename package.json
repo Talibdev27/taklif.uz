@@ -11,8 +11,7 @@
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
     "db:init": "node scripts/init-db.js",
-    "migrate-data": "node scripts/migrate-data.js",
-    "postinstall": "npm run db:init"
+    "migrate-data": "node scripts/migrate-data.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -53,6 +52,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/memoizee": "^0.4.12",
     "@types/multer": "^1.4.12",
+    "@types/pg": "^8.11.10",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.1.1",
     "class-variance-authority": "^0.7.1",
@@ -61,9 +61,9 @@
     "connect-pg-simple": "^10.0.0",
     "date-fns": "^3.6.0",
     "dotenv": "^16.5.0",
+    "drizzle-kit": "^0.30.0",
     "drizzle-orm": "^0.39.1",
     "drizzle-zod": "^0.7.0",
-    "drizzle-kit": "^0.30.0",
     "embla-carousel-react": "^8.6.0",
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
@@ -84,7 +84,6 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "pg": "^8.13.1",
-    "@types/pg": "^8.11.10",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
@@ -105,6 +104,7 @@
     "zod-validation-error": "^3.4.0"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
     "@types/express": "^4.17.21",
     "@types/node": "^22.10.1",
     "@types/ws": "^8.5.13",

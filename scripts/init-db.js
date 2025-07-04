@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
 import 'dotenv/config';
-import { db } from '../server/db.js';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 
 async function initializeDatabase() {
   const DATABASE_URL = process.env.DATABASE_URL;
