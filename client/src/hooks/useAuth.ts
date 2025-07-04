@@ -10,6 +10,8 @@ interface AuthContextType {
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
+  sessionError: string | null;
+  clearSessionError: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [sessionError, setSessionError] = useState<string | null>(null);
 
   useEffect(() => {
     // Check for stored authentication on mount
@@ -33,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         verifyToken(storedToken);
       } catch (error) {
         console.error('Error parsing stored user data:', error);
+        setSessionError('Session data corrupted. Please log in again.');
         logout();
       }
     } else {
@@ -49,14 +53,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          setSessionError('Your session has expired. Please log in again.');
+        } else if (response.status === 403) {
+          setSessionError('Session invalid. Please log in again.');
+        } else {
+          setSessionError('Unable to verify session. Please try logging in again.');
+        }
         logout();
       } else {
         const { user: verifiedUser } = await response.json();
         setUser(verifiedUser);
         localStorage.setItem('currentUser', JSON.stringify(verifiedUser));
+        setSessionError(null);
       }
     } catch (error) {
       console.error('Token verification failed:', error);
+      setSessionError('Network error during session verification. Your data is safe, but please check your connection and try logging in again.');
       logout();
     } finally {
       setIsLoading(false);
@@ -65,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
+      setSessionError(null);
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -84,14 +98,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('currentUser', JSON.stringify(data.user));
 
+      // Set token expiry reminder
+      const tokenExpiry = new Date();
+      tokenExpiry.setDate(tokenExpiry.getDate() + 6); // Remind 1 day before expiry
+      localStorage.setItem('tokenExpiryReminder', tokenExpiry.toISOString());
+
       return { success: true };
     } catch (error) {
-      return { success: false, error: 'Network error occurred' };
+      return { success: false, error: 'Network error occurred. Please check your connection and try again.' };
     }
   };
 
   const register = async (name: string, email: string, password: string) => {
     try {
+      setSessionError(null);
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
@@ -111,9 +131,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('currentUser', JSON.stringify(data.user));
 
+      // Set token expiry reminder
+      const tokenExpiry = new Date();
+      tokenExpiry.setDate(tokenExpiry.getDate() + 6);
+      localStorage.setItem('tokenExpiryReminder', tokenExpiry.toISOString());
+
       return { success: true };
     } catch (error) {
-      return { success: false, error: 'Network error occurred' };
+      return { success: false, error: 'Network error occurred. Please check your connection and try again.' };
     }
   };
 
@@ -122,6 +147,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
     localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('tokenExpiryReminder');
+    setSessionError(null);
+  };
+
+  const clearSessionError = () => {
+    setSessionError(null);
   };
 
   const value = {
@@ -131,7 +162,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     register,
     logout,
     isLoading,
-    isAuthenticated: !!user && !!token
+    isAuthenticated: !!user && !!token,
+    sessionError,
+    clearSessionError
   };
 
   return React.createElement(AuthContext.Provider, { value }, children);
