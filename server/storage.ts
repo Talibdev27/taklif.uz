@@ -573,11 +573,11 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log("Creating wedding with data:", { ...insertWedding, userId });
       
-      // Ensure defaultLanguage is included in the insert
+      // Ensure defaultLanguage is included in the insert  
       const weddingData = {
         ...insertWedding,
         userId,
-        defaultLanguage: insertWedding.defaultLanguage || 'en'
+        defaultLanguage: insertWedding.defaultLanguage || 'uz'
       };
       
       console.log("Final wedding data to insert:", weddingData);
