@@ -22,7 +22,6 @@ export async function setupCustomVite(app: Express, server: Server) {
   const vite = await createViteServer({
     plugins: [
       (await import("@vitejs/plugin-react")).default(),
-      (await import("@replit/vite-plugin-runtime-error-modal")).default(),
     ],
     resolve: {
       alias: {
