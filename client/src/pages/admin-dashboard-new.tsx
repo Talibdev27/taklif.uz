@@ -36,7 +36,7 @@ export default function AdminDashboard() {
     story: '',
     dearGuestMessage: '',
     couplePhotoUrl: '',
-    defaultLanguage: 'uz',
+    defaultLanguage: 'en',
     primaryColor: '#1976d2',
     accentColor: '#1565c0'
   });
@@ -469,7 +469,7 @@ export default function AdminDashboard() {
       story: '',
       dearGuestMessage: '',
       couplePhotoUrl: '',
-      defaultLanguage: 'uz',
+      defaultLanguage: 'en',
       primaryColor: '#1976d2',
       accentColor: '#1565c0'
     });

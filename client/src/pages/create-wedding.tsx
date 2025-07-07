@@ -108,7 +108,6 @@ export default function CreateWedding() {
       story: "",
       backgroundMusicUrl: "",
       isPublic: true,
-      defaultLanguage: "uz",
     },
   });
 
@@ -146,8 +145,7 @@ export default function CreateWedding() {
           template: data.template,
           primaryColor: data.primaryColor,
           accentColor: data.accentColor,
-          isPublic: data.isPublic,
-          defaultLanguage: data.defaultLanguage
+          isPublic: data.isPublic
         };
         
         console.log('Sending wedding data:', weddingData);
@@ -568,53 +566,6 @@ export default function CreateWedding() {
                       )}
                     />
                   </div>
-
-                  {/* Language Selection */}
-                  <FormField
-                    control={form.control}
-                    name="defaultLanguage"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-charcoal font-semibold">
-                          {t('createWedding.defaultLanguage')}
-                        </FormLabel>
-                        <FormControl>
-                          <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                          >
-                            <SelectTrigger className="wedding-input">
-                              <SelectValue placeholder={t('createWedding.selectLanguage')} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="uz">
-                                <div className="flex items-center gap-2">
-                                  <span>🇺🇿</span>
-                                  O'zbekcha
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="en">
-                                <div className="flex items-center gap-2">
-                                  <span>🇺🇸</span>
-                                  English
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="ru">
-                                <div className="flex items-center gap-2">
-                                  <span>🇷🇺</span>
-                                  Русский
-                                </div>
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <p className="text-sm text-charcoal/60">
-                          {t('createWedding.languageDescription')}
-                        </p>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </CardContent>
               </Card>
             )}

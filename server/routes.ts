@@ -490,7 +490,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Admin wedding creation request:", req.body);
 
-      const { userId, bride, groom, weddingDate, venue, venueAddress, template, story, dearGuestMessage, couplePhotoUrl, defaultLanguage, primaryColor, accentColor } = req.body;
+      const { userId, bride, groom, weddingDate, venue, venueAddress, template, story, dearGuestMessage, couplePhotoUrl, primaryColor, accentColor } = req.body;
 
       // Validate required fields
       if (!userId || !bride || !groom || !weddingDate) {
@@ -517,7 +517,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         dearGuestMessage: dearGuestMessage?.trim() || "",
         couplePhotoUrl: couplePhotoUrl?.trim() || null,
         template: template || "standard",
-        defaultLanguage: defaultLanguage || "uz",
         primaryColor: primaryColor || "#D4B08C",
         accentColor: accentColor || "#89916B",
         backgroundMusicUrl: null,
@@ -1345,7 +1344,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         dearGuestMessage: weddingFields.dearGuestMessage || null,
         couplePhotoUrl: weddingFields.couplePhotoUrl || null,
         template: weddingFields.template || "modernElegance",
-        defaultLanguage: weddingFields.defaultLanguage || "uz",
+        defaultLanguage: weddingFields.defaultLanguage || "en",
         primaryColor: weddingFields.primaryColor || "#D4B08C",
         accentColor: weddingFields.accentColor || "#89916B",
         backgroundMusicUrl: null,

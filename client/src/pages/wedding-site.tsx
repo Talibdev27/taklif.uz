@@ -48,23 +48,9 @@ export default function WeddingSite() {
 
   // Set language based on wedding's default language
   useEffect(() => {
-    if (wedding?.defaultLanguage) {
-      // Check if URL has a language parameter (for manual language switching)
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlLang = urlParams.get('lang');
-      
-      // If no URL language parameter, use the wedding's default language
-      if (!urlLang && i18n.language !== wedding.defaultLanguage) {
-        console.log('Wedding site: Setting language to wedding default:', wedding.defaultLanguage);
-        i18n.changeLanguage(wedding.defaultLanguage);
-        localStorage.setItem('language', wedding.defaultLanguage);
-      }
-      // If URL has language parameter and it's different from current, switch to it
-      else if (urlLang && urlLang !== i18n.language && ['en', 'ru', 'uz'].includes(urlLang)) {
-        console.log('Wedding site: Setting language from URL parameter:', urlLang);
-        i18n.changeLanguage(urlLang);
-        localStorage.setItem('language', urlLang);
-      }
+    if (wedding?.defaultLanguage && i18n.language !== wedding.defaultLanguage) {
+      console.log('Wedding site: Setting language to', wedding.defaultLanguage);
+      i18n.changeLanguage(wedding.defaultLanguage);
     }
   }, [wedding?.defaultLanguage, i18n]);
 
